@@ -1,0 +1,669 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1b2a4a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mochila">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head><body>
+<title>Mochila</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+/* Layout: phone-first single column; slim navy header, fixed bottom tab bar with icons (max 5), segmented sub-sections */
+:root{
+  --bg:#f6f3ec; --surface:#ffffff; --fg:#14213d; --muted:#5b6478;
+  --navy:#1b2a4a; --red:#d6321f; --cream:#f3ecd6; --line:#e2ddd0; --onnavy:#f3ecd6;
+  --ok:#2e7d4f; --okbg:#e3f2e8; --warn:#9a6200; --warnbg:#fbefd5; --alertbg:#fde4e0; --info:#2b5aa8; --infobg:#e3ebf8;
+  --display:"Fraunces",Georgia,serif; --body:"Nunito Sans",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1626; --surface:#18223a; --fg:#ece6d4; --muted:#9aa3b8; --red:#ef5a46; --cream:#2a3550; --line:#2a3550;
+  --ok:#6fcf97; --okbg:#1d3a2b; --warn:#f0b956; --warnbg:#3a2f17; --alertbg:#4a1f1a; --info:#8fb3f0; --infobg:#1d2c4a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1626; --surface:#18223a; --fg:#ece6d4; --muted:#9aa3b8; --red:#ef5a46; --cream:#2a3550; --line:#2a3550;
+  --ok:#6fcf97; --okbg:#1d3a2b; --warn:#f0b956; --warnbg:#3a2f17; --alertbg:#4a1f1a; --info:#8fb3f0; --infobg:#1d2c4a; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--navy)}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:560px;margin:0 auto}
+header{background:var(--navy);color:var(--onnavy);padding-block:12px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.top{display:flex;align-items:center;gap:12px}
+.top svg{flex:none}
+.top h1{font-family:var(--display);font-size:1.35rem;margin:0;line-height:1.1}
+.top p{margin:2px 0 0;font-size:.8rem;opacity:.8}
+.lang{margin-left:auto;display:flex;border:1px solid rgba(243,236,214,.4);border-radius:999px;overflow:hidden;flex:none}
+.lang button{background:none;border:0;color:var(--onnavy);font:700 .8rem var(--body);padding:6px 11px;cursor:pointer;letter-spacing:.04em}
+.lang button[aria-pressed="true"]{background:var(--red)}
+.demo{margin-top:12px;display:flex;align-items:center;gap:8px;font-size:.8rem}
+.demo span{font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--red);color:#fff;border-radius:4px;padding:1px 6px;flex:none}
+.demo select{flex:1;min-width:0;font:600 .9rem var(--body);padding:6px 8px;border-radius:8px;border:1px solid rgba(243,236,214,.4);background:#24365e;color:var(--onnavy)}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);display:flex;padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.tabbar .in{display:flex;width:100%;max-width:560px;margin:0 auto}
+.tabbar button{flex:1;min-width:0;background:none;border:0;display:grid;justify-items:center;gap:2px;padding:6px 2px;color:var(--muted);font:700 .68rem var(--body);cursor:pointer;border-radius:10px}
+.tabbar button svg{width:24px;height:24px}
+.tabbar button span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.tabbar button[aria-selected="true"]{color:var(--red)}
+.tabbar button[aria-selected="true"] svg{stroke-width:2.4}
+.lv{width:1.7rem;height:1.7rem;border-radius:50%;display:grid;place-items:center;font:700 .8rem var(--body);flex:none;color:#fff}
+.lv.l4{background:var(--red)}.lv.l3{background:#7a4bb0}.lv.l2{background:#2b5aa8}.lv.l1{background:#5b6478}
+.ypick{display:grid;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.yhead{display:flex;gap:8px;align-items:baseline}
+.ypick{border:2px solid var(--navy)}
+:root[data-theme="dark"] .ypick{border-color:var(--cream)}
+.ypick .pills{flex-wrap:wrap;overflow:visible}
+.ypick .pills button{min-width:3.6rem;padding:10px 14px;font-size:1rem;font-weight:700;border-width:2px}
+.ypick .pills.sub button{background:var(--cream)}
+.ypick .pills button[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#fff}
+.yhead b{font-family:var(--display);font-size:1.3rem}
+.pills.sub{padding-left:10px;border-left:3px solid var(--red)}
+.search{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--fg);width:100%;box-sizing:border-box}
+.calhead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.calhead b{font-family:var(--display);font-size:1.15rem;text-transform:capitalize}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px}
+.cal small{text-align:center;font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.cal button{aspect-ratio:1;min-width:0;border:1px solid transparent;border-radius:8px;background:none;color:var(--fg);font:600 .9rem var(--body);cursor:pointer;display:grid;align-content:center;justify-items:center;gap:2px;padding:0;font-variant-numeric:tabular-nums}
+.cal button.today{border-color:var(--red);color:var(--red);font-weight:800}
+.cal button.sel{background:var(--navy);color:var(--onnavy)}
+:root[data-theme="dark"] .cal button.sel{background:var(--cream)}
+.cal i{display:flex;gap:2px;height:6px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex:none}
+.cal .dot{width:5px;height:5px}
+.dot.test{background:var(--red)}.dot.hw{background:var(--info)}.dot.ev{background:var(--ok)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.legend span{display:flex;gap:6px;align-items:center}
+.codein{font-size:1.6rem;letter-spacing:.5em;text-align:center;font-variant-numeric:tabular-nums}
+code.code{font:700 .85rem ui-monospace,Menlo,monospace;letter-spacing:.08em;background:var(--cream);padding:1px 6px;border-radius:4px;color:var(--fg)}
+.chk{display:flex;gap:8px;align-items:center;font-size:.9rem;color:var(--muted)}
+.chk input{width:20px;height:20px;accent-color:var(--red)}
+.ideameta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}
+.ideameta select{font:600 .8rem var(--body);padding:4px 6px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+.votebox{display:grid;gap:6px;justify-items:end;flex:none}
+.vote{border:2px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:6px 12px;font:700 .9rem var(--body);cursor:pointer;white-space:nowrap}
+span.vote{cursor:default}
+.vote.on{border-color:var(--ok);background:var(--okbg);color:var(--ok)}
+.sechead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:6px}
+.sechead h3{margin:0}
+.sechead button{background:none;border:0;color:var(--red);font:700 .82rem var(--body);cursor:pointer;padding:2px 0}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+main{padding-block:20px calc(96px + env(safe-area-inset-bottom,0px))}
+.sec{display:grid;gap:12px}
+h2{font-family:var(--display);font-size:1.25rem;margin:0}
+h3{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:6px 0 0}
+.note{font-size:.8rem;color:var(--muted);margin:0}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.row{display:flex;gap:14px;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.time{font-variant-numeric:tabular-nums;font-size:.85rem;color:var(--muted);width:3.2rem;flex:none}
+.what{min-width:0;flex:1}
+.what b{display:block}
+.what span{font-size:.85rem;color:var(--muted)}
+.what p{margin:4px 0 0;font-size:.92rem}
+.now{background:var(--cream)}
+.chip{font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:2px 8px;flex:none;background:var(--cream);color:var(--fg)}
+.chip.red{background:var(--red);color:#fff}
+.c-holiday,.c-public{background:var(--okbg);color:var(--ok)}
+.c-dayoff{background:var(--infobg);color:var(--info)}
+.c-cancel{background:var(--warnbg);color:var(--warn)}
+.c-dana,.c-esalert{background:var(--red);color:#fff}
+.c-test{background:var(--warnbg);color:var(--warn)}
+.alert{background:var(--alertbg);border:1px solid var(--red);border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start}
+.alert b{display:block}
+.alert p{margin:2px 0 0;font-size:.92rem}
+.pills{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.pills button{background:var(--surface);border:1px solid var(--line);color:var(--fg);border-radius:8px;padding:6px 12px;font:600 .85rem var(--body);cursor:pointer;flex:none;white-space:nowrap}
+.pills button[aria-pressed="true"]{background:var(--navy);color:var(--onnavy);border-color:var(--navy)}
+.field{display:flex;gap:8px;align-items:center;font-size:.85rem;color:var(--muted)}
+.field select{flex:1;min-width:0}
+select.plain,form input,form select,form textarea{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);min-width:0}
+form{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+form .full{grid-column:1/-1}
+form button{grid-column:1/-1;background:var(--red);color:#fff;border:0;border-radius:8px;font:700 .95rem var(--body);padding:10px;cursor:pointer}
+.check{width:22px;height:22px;accent-color:var(--red);flex:none}
+.done b{text-decoration:line-through;opacity:.55}
+.del{background:none;border:0;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:4px 6px}
+.date{width:3.2rem;flex:none;text-align:center;border-right:1px solid var(--line);padding-right:12px}
+.date b{font-family:var(--display);font-size:1.4rem;display:block;line-height:1}
+.date span{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--red);font-weight:700}
+.empty{padding:16px;color:var(--muted);text-align:center}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.stat b{font-family:var(--display);font-size:1.6rem;display:block;font-variant-numeric:tabular-nums}
+.stat span{font-size:.82rem;color:var(--muted)}
+.stat.good b{color:var(--ok)} .stat.bad b{color:var(--red)}
+.pt{font-family:var(--display);font-weight:700;font-size:1.1rem;width:2rem;text-align:center;flex:none}
+.pt.merit{color:var(--ok)} .pt.demerit{color:var(--red)}
+.row select{font:600 .85rem var(--body);padding:6px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);flex:none}
+.toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.toggle button{font:700 1rem var(--body);padding:14px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.toggle button[aria-pressed="true"].yes{border-color:var(--ok);background:var(--okbg);color:var(--ok)}
+.toggle button:disabled{opacity:.5;cursor:not-allowed}
+.toggle button[aria-pressed="true"].no{border-color:var(--red);background:var(--alertbg);color:var(--red)}
+.btn{background:var(--navy);color:var(--onnavy);border:0;border-radius:8px;font:700 .82rem var(--body);padding:7px 12px;cursor:pointer;flex:none}
+.grade{font-family:var(--display);font-weight:700;font-size:1.5rem;width:2.4rem;text-align:center;flex:none;font-variant-numeric:tabular-nums}
+.bar{height:6px;border-radius:3px;background:var(--line);margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--fg);opacity:.75}
+.paper{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 16px;display:grid;gap:14px}
+.paper .mast{font-family:var(--display);font-size:1.6rem;font-weight:700;text-align:center;border-bottom:3px double var(--fg);padding-bottom:8px;line-height:1.1}
+.paper .mast small{display:block;font:600 .75rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.paper article h4{font-family:var(--display);font-size:1.15rem;margin:0 0 4px;text-wrap:balance}
+.paper article p{margin:0;font-size:.95rem}
+.paper article span{font-size:.8rem;color:var(--muted)}
+.lock{display:flex;gap:10px;align-items:center;font-size:.82rem;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:10px 12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:8px}
+.card b{font-size:1.02rem}
+.cardhead{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+.confirm{display:flex;gap:6px;flex:none}
+.btn.danger{background:var(--red);color:#fff}
+.btn.ghost{background:none;color:var(--fg);border:1px solid var(--line)}
+.linkbtn{background:none;border:0;color:var(--fg);text-decoration:underline;font:600 .85rem var(--body);cursor:pointer;justify-self:start;padding:0}
+.faded{opacity:.6}
+.row.top{align-items:flex-start}
+.note.ok{color:var(--ok);font-weight:700}
+.note.err{color:var(--red);font-weight:700}
+fieldset{border:1px solid var(--line);border-radius:10px;padding:10px;display:grid;gap:8px;margin:0;min-width:0}
+legend{font-size:.8rem;font-weight:700;color:var(--muted);padding:0 4px}
+.pills.seg button{border-radius:999px}
+.toggle button{padding:10px}
+@media (prefers-reduced-motion:no-preference){.sec{animation:in .2s ease-out}@keyframes in{from{transform:translateY(4px)}}}
+</style>
+
+<header>
+  <div class="wrap">
+    <div class="top">
+      <svg viewBox="0 0 1024 1024" width="40" height="40" aria-hidden="true"> <defs> <linearGradient id="ic-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#24365e"/><stop offset="1" stop-color="#121d36"/></linearGradient> <linearGradient id="ic-flap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e5452f"/><stop offset="1" stop-color="#c22c1a"/></linearGradient> <clipPath id="ic-body"><rect x="262" y="250" width="500" height="580" rx="130"/></clipPath></defs> <rect width="1024" height="1024" rx="228" fill="url(#ic-bg)"/> <ellipse cx="512" cy="842" rx="250" ry="30" fill="#000" opacity=".28"/> <path d="M420 262 C420 150 604 150 604 262" fill="none" stroke="#f3ecd6" stroke-width="44" stroke-linecap="round"/> <rect x="262" y="250" width="500" height="580" rx="130" fill="#f3ecd6"/> <rect x="262" y="250" width="44" height="580" fill="#000" opacity=".06" clip-path="url(#ic-body)"/> <path d="M262 380 C262 300 322 250 402 250 L622 250 C702 250 762 300 762 380 L762 478 C640 548 384 548 262 478 Z" fill="url(#ic-flap)"/> <rect x="378" y="470" width="44" height="96" rx="14" fill="#1b2a4a"/> <rect x="602" y="470" width="44" height="96" rx="14" fill="#1b2a4a"/> <rect x="342" y="606" width="340" height="168" rx="56" fill="#e4d8b8" stroke="#1b2a4a" stroke-width="18"/> <path d="M392 664 H632" stroke="#1b2a4a" stroke-width="14" stroke-linecap="round"/> <circle cx="632" cy="664" r="16" fill="#d6321f"/> </svg>
+      <div style="min-width:0"><h1>Mochila</h1><p>British School of Valencia</p><p id="who"></p></div>
+      <div class="lang" role="group" aria-label="Language">
+        <button id="lang-en" data-lang="en">EN</button><button id="lang-es" data-lang="es">ES</button>
+      </div>
+    </div>
+    <div class="demo"><span>Demo</span><select id="role" aria-label="Role" hidden></select><button class="btn" id="lockall" data-lockall="1" hidden></button><button class="btn ghost" id="logout" data-logout="1" hidden style="margin-left:auto;color:var(--onnavy);border-color:rgba(243,236,214,.4)"></button><button class="btn ghost" id="mainbtn" data-gopublic="1" hidden style="color:var(--onnavy);border-color:rgba(243,236,214,.4)"></button><button class="btn" id="adminbtn" data-adminlogin="1" style="margin-left:auto;background:var(--red);color:#fff;font-size:.9rem;padding:8px 14px"></button></div>
+  </div>
+</header>
+
+<main class="wrap" id="main"></main>
+<nav class="tabbar" aria-label="Menu"><div class="in" role="tablist" id="tabs"></div></nav>
+
+<script>
+const KAS="Kas Benjamin V.D.H";
+const CLASSES=[];for(const y of[7,8,9,10,11])for(const l of"ABCD")CLASSES.push(`Year ${y}${l}`);
+const CATS=["general","holiday","dayoff","cancel","public","dana","esalert"];
+const ALERTS=["dana","esalert"];const isAlert=n=>ALERTS.includes(n.cat);
+const HOUSES=[{id:"turia",n:"Turia",col:"#2f6db5",base:124},{id:"albufera",n:"Albufera",col:"#2e8a57",base:131},{id:"malvarrosa",n:"Malvarrosa",col:"#c8541e",base:118},{id:"miguelete",n:"Miguelete",col:"#7a4bb0",base:127}];
+const ROLES=["student","parent","staff","office","head","admin"];
+const T={
+ en:{roles:{student:"Student",parent:"Parent",staff:"Teacher",office:"Administration",head:"School head",admin:"Admin"},power:"Power levels",powerNote:"You can only manage accounts below your own level.",lvl:{4:"Admin",3:"School head",2:"Staff · teachers and administration",1:"Students · and parents"},level:"Level",notAllowed:"You can not do this at your level.",viewAs:"View as",
+  tabs:{hwlist:"Homework",calendar:"Calendar",home:"Today",today:"Timetable",hw:"Homework",me:"Results",grades:"Grades",points:"Merits",school:"School",absence:"Absence",teach:"Lessons",assign:"Set work",pupils:"Pupils",give:"Merits",marks:"Grades",absent:"Absences",classes:"Classes",timetables:"Timetables",codes:"Student codes",day:"Attendance",comms:"Publish",post:"News",lunchlist:"Lunch",lostm:"Lost & found",publish:"Newspaper",manage:"Events",overview:"Overview",users:"Accounts"},seeAll:"See all",
+  hub:{news:"News",paper:"BSV Times",events:"Events",life:"Clubs & council",lost:"Lost property"},
+  days:["Mon","Tue","Wed","Thu","Fri"],now:"Now",due:"Due",on:"On",add:"Add",noHw:"Nothing to do. Nice!",mine:"My own",late:"Late",past:"Past",
+  myClass:"My class",cls:"Class",homework:"Homework",test:"Test",tests:"Tests",subject:"Subject",
+  phTask:"What needs to be done?",phSubject:"Subject",phTitle:"Title",phText:"Message",phReason:"Reason",phItem:"What was found?",phWhere:"Where was it found?",phName:"Full name",phClassSubj:"Class or subject",
+  send:"Send to class",sent:"Sent",addEvent:"Add event",publish:"Publish",give:"Give",student:"Student",save:"Save grade",saved:"Saved",
+  merit:"Merit",demerit:"Demerit",merits:"Merits",demerits:"Demerits",noPts:"No merits or demerits yet.",onlyStudents:"Only students can get merits and demerits.",
+  cat:{general:"General",holiday:"Holiday",dayoff:"Day off",cancel:"Lesson cancelled",public:"Public holiday",dana:"DANA alert",esalert:"ES-Alert"},addAlert:"Post an alert",alertNote:"Staff can post DANA and ES-Alert warnings. They show at the top for everyone and end after 2 days, or when you end them.",alertType:"Type of alert",allNews:"All",endAlert:"End alert",ended:"Ended",
+  hwNote:"Work set by a teacher appears for every student in that class.",
+  demoNote:"Demo with invented names and example data. Everything stays on this phone.",
+  lockNote:"In the real version only BSV students, parents and staff sign in, with their school account.",
+  st:{students:"Students (school)",classes:"Classes",merits:"Merits given",demerits:"Demerits given",lunchYes:"Lunch today",absent:"Absent today"},role:"Role",
+  current:"Average",target:"Target",effort:"Effort",outOf:"Grades 1–9",onTarget:"subjects on or above target",noGrades:"No grades yet.",
+  lunchQ:"School lunch today?",yes:"Yes",no:"No",lunchSaved:"Sent to the kitchen",lunchDeadline:"Change before 10:00",lunchClosed:"Closed after 10:00. Ask at reception.",noSchool:"No school today.",menu:"Menu",
+  lunchClubs:"Lunch clubs",council:"Student council",councilText:"Meets every other Wednesday at lunch in the library. Your class rep takes your ideas.",idea:"Your idea for the council",sendIdea:"Send idea",ideaSent:"Idea sent",
+  mineBtn:"That's mine",claimed:"Collect at reception",found:"Found",addItem:"Add found item",
+  issue:"Issue",newIssue:"New",editors:"Written by BSV students",phHeadline:"Headline",phArticle:"Article",phAuthor:"Written by",pubIssue:"Publish issue",article:"Article",optional:"optional",
+  coming:"Coming",notComing:"Not coming",noAnswer:"No answer",realCount:"Only real answers given in the app are counted.",
+  lockTitle:"Admin login",adminBtn:"Admin",setPin:"Choose an admin code (4–6 digits)",repeatPin:"Repeat the code",enterPin:"Enter your admin code",unlock:"Unlock",setBtn:"Set code",wrongPin:"Wrong code. Try again.",pinMismatch:"The codes are not the same.",pinNote:"Only the admin can switch accounts. Everyone else uses the app as a student.",lockBtn:"Lock all and go back to student",noCodesYet:"The admin has not set up codes yet.",toStudent:"Continue as student",giveAccess:"Give access with a code",accessNote:"Admin accounts use your admin code.",codeSetFor:"Code set for",hasCode:"Code",lockShort:"Lock",account:"Account",
+  forgot:"Forgot the code?",forgotNote:"Resetting erases the code and all demo data on this phone.",resetBtn:"Erase and reset",
+  changePin:"Change admin code",oldPin:"Current code",newPin:"New code",pinChanged:"Code changed",
+  del:"Delete?",cancel:"Cancel",
+  next:"Next lesson",noMore:"No more lessons today",dueSoon:"Due soon",latest:"Latest news",house:"House",houses:"House points",
+  child:"Your child",pub:{main:"Main page",news:"News",events:"Events",paper:"BSV Times",login:"Log in",account:"My account"},welcome:"Welcome to the British School of Valencia",perDay:"Lunch per day (whole school)",ideasHome:"Ideas for the council",reporter:"BSV student reporter",updated:"Mochila has been updated to the newest version.",pubNote:"This page is open to everyone. Personal information such as grades, merits, homework or codes is never shown here.",nextEvents:"Coming up",latestPaper:"Latest BSV Times",readPaper:"Read the paper",goAccount:"Go to my account",mainBtn:"Main page",loggedAs:"You are logged in.",ideasPub:"Ideas for the student council",ideaBox:"Idea box",ideaBoxNote:"Every idea goes to the student council. Ideas are translated into English and Spanish automatically.",anon:"Send without my name",anonName:"Anonymous",vote:"Agree",votes:"agree",translated:"Translated",showOrig:"Show original",showTr:"Show translation",translating:"Translating…",notTranslated:"Not translated yet",translateBtn:"Translate",ideaStatus:{new:"New",discussed:"Discussed",done:"Done",later:"Not now"},sortTop:"Most agreed",sortNew:"Newest",noIdeas:"No ideas yet. Be the first!",errLog:"Error log",errNote:"Errors the app caught and repaired by itself. Copy this list and send it to Claude to get the code fixed.",noErrors:"No errors. Everything works.",copy:"Copy",copied:"Copied",clearLog:"Clear",repaired:"Something went wrong, but the app repaired itself.",broken:"Something went wrong and the app could not repair itself.",repairBtn:"Repair app",repairNote:"Repairing resets the example data on this phone. Accounts, codes and your admin code stay.",absReason:{sick:"Sick",late:"Arriving late",appointment:"Appointment",other:"Other"},reportBtn:"Report absence",reported:"Reported",date:"Date",note:"Note (optional)",noAbs:"No absences reported.",
+  addUser:"Add account",lastAdmin:"There must always be one admin and one student account.",stuLoginTitle:"Log in",stuLoginText:"Enter your own 6-digit student code. You get it from the school. Do not share it.",codeLabel:"Student code (6 digits)",login:"Log in",logout:"Log out",wrongCode:"That code is not right.",tooMany:"Too many wrong tries. Wait {s} seconds.",studentCode:"Code",newCode:"New code",codeNote:"Each student logs in with their own 6-digit code. Give it to the student in person. Make a new code if someone else knows it.",newCodeMade:"New code for",noCodeStudents:"No student accounts in this class yet.",codesNote:"Only staff, the school head and the admin can see these codes. Students and parents never see them. Give a code to the student in person.",showCode:"Show",hideCode:"Hide",nameTaken:"That name is already in use for this kind of account.",pastDate:"Choose a date from today onwards.",articleIncomplete:"Article {n} is not complete. Fill in the headline and the text, or leave it empty.",noArticles:"Add at least one article, or approve one sent in by a student.",claimedBy:"Claimed by",handOver:"Handed over",handed:"Handed over",search:"Search",noResults:"Nothing found.",weekendNote:"It is the weekend. Showing the timetable for Monday.",doneWord:"done",hwlistTab:"Homework",calTab:"Calendar",wk:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],nothingDay:"Nothing planned.",prevM:"Previous month",nextM:"Next month",submitTitle:"Write for The BSV Times",submitBtn:"Send to the editors",subNote:"The office reads your article before it goes in the paper.",yourSubs:"Your articles",status:{pending:"Waiting",approved:"Approved",published:"Published",rejected:"Not accepted"},fromStudents:"Sent in by students",approve:"Approve",reject:"Reject",willInclude:"Approved articles go in the next issue automatically.",subSent:"Article sent",time:"Time (if late)",at:"at",badge:"Badge",nextBadge:"{n} more merits to {b}",topBadge:"Top badge reached!",noBadge:"No badge yet",badges:[["Bronze","#b0703a"],["Silver","#7f8b97"],["Gold","#c9a227"],["Platinum","#3f97ad"]],
+  subj:{Maths:"Maths",English:"English",Spanish:"Spanish",Science:"Science",History:"History",PE:"PE",Art:"Art",Music:"Music",Break:"Break",Lunch:"Lunch",Geography:"Geography",Computing:"Computing",Free:"Free",French:"French",Drama:"Drama"}},
+ es:{roles:{student:"Alumno",parent:"Familia",staff:"Profesor",office:"Administración",head:"Director/a",admin:"Admin"},power:"Niveles de poder",powerNote:"Solo puedes gestionar cuentas por debajo de tu nivel.",lvl:{4:"Admin",3:"Director/a del colegio",2:"Personal · profesores y administración",1:"Alumnos · y familias"},level:"Nivel",notAllowed:"No puedes hacer esto con tu nivel.",viewAs:"Ver como",
+  tabs:{hwlist:"Deberes",calendar:"Calendario",home:"Hoy",today:"Horario",hw:"Deberes",me:"Resultados",grades:"Notas",points:"Méritos",school:"Colegio",absence:"Ausencia",teach:"Clases",assign:"Tareas",pupils:"Alumnos",give:"Méritos",marks:"Notas",absent:"Ausencias",classes:"Clases",timetables:"Horarios",codes:"Códigos de alumnos",day:"Asistencia",comms:"Publicar",post:"Noticias",lunchlist:"Comedor",lostm:"Perdidos",publish:"Periódico",manage:"Eventos",overview:"Resumen",users:"Cuentas"},seeAll:"Ver todo",
+  hub:{news:"Noticias",paper:"BSV Times",events:"Eventos",life:"Clubs y consejo",lost:"Objetos perdidos"},
+  days:["Lun","Mar","Mié","Jue","Vie"],now:"Ahora",due:"Entrega",on:"El",add:"Añadir",noHw:"Nada pendiente. ¡Genial!",mine:"Propio",late:"Tarde",past:"Pasado",
+  myClass:"Mi clase",cls:"Clase",homework:"Deberes",test:"Examen",tests:"Exámenes",subject:"Asignatura",
+  phTask:"¿Qué hay que hacer?",phSubject:"Asignatura",phTitle:"Título",phText:"Mensaje",phReason:"Motivo",phItem:"¿Qué se encontró?",phWhere:"¿Dónde se encontró?",phName:"Nombre completo",phClassSubj:"Clase o asignatura",
+  send:"Enviar a la clase",sent:"Enviado",addEvent:"Añadir evento",publish:"Publicar",give:"Dar",student:"Alumno",save:"Guardar nota",saved:"Guardado",
+  merit:"Mérito",demerit:"Demérito",merits:"Méritos",demerits:"Deméritos",noPts:"Aún no hay méritos ni deméritos.",onlyStudents:"Solo los alumnos pueden recibir méritos y deméritos.",
+  cat:{general:"General",holiday:"Vacaciones",dayoff:"Día libre",cancel:"Clase cancelada",public:"Festivo",dana:"Alerta DANA",esalert:"ES-Alert"},addAlert:"Publicar alerta",alertNote:"El personal puede publicar avisos DANA y ES-Alert. Salen arriba para todos y terminan a los 2 días, o cuando los terminas tú.",alertType:"Tipo de alerta",allNews:"Todo",endAlert:"Terminar alerta",ended:"Terminada",
+  hwNote:"Las tareas del profesorado aparecen para todos los alumnos de esa clase.",
+  demoNote:"Demo con nombres inventados y datos de ejemplo. Todo se queda en este móvil.",
+  lockNote:"En la versión real solo alumnos, familias y personal del BSV entran, con su cuenta del colegio.",
+  st:{students:"Alumnos (colegio)",classes:"Clases",merits:"Méritos dados",demerits:"Deméritos dados",lunchYes:"Comen hoy",absent:"Ausentes hoy"},role:"Rol",
+  current:"Media",target:"Objetivo",effort:"Esfuerzo",outOf:"Notas 1–9",onTarget:"asignaturas en su objetivo o por encima",noGrades:"Aún no hay notas.",
+  lunchQ:"¿Comedor hoy?",yes:"Sí",no:"No",lunchSaved:"Enviado a cocina",lunchDeadline:"Cambia antes de las 10:00",lunchClosed:"Cerrado después de las 10:00. Pregunta en recepción.",noSchool:"Hoy no hay clase.",menu:"Menú",
+  lunchClubs:"Clubs a la hora de comer",council:"Consejo de alumnos",councilText:"Se reúne cada dos miércoles a la hora de comer en la biblioteca. Tu delegado recoge tus ideas.",idea:"Tu idea para el consejo",sendIdea:"Enviar idea",ideaSent:"Idea enviada",
+  mineBtn:"Es mío",claimed:"Recógelo en recepción",found:"Encontrado",addItem:"Añadir objeto",
+  issue:"Número",newIssue:"Nuevo",editors:"Escrito por alumnos del BSV",phHeadline:"Titular",phArticle:"Artículo",phAuthor:"Escrito por",pubIssue:"Publicar número",article:"Artículo",optional:"opcional",
+  coming:"Vienen",notComing:"No vienen",noAnswer:"Sin respuesta",realCount:"Solo se cuentan las respuestas reales dadas en la app.",
+  lockTitle:"Acceso admin",adminBtn:"Admin",setPin:"Elige un código de admin (4–6 cifras)",repeatPin:"Repite el código",enterPin:"Introduce tu código de admin",unlock:"Desbloquear",setBtn:"Guardar código",wrongPin:"Código incorrecto. Inténtalo de nuevo.",pinMismatch:"Los códigos no coinciden.",pinNote:"Solo el admin puede cambiar de cuenta. Los demás usan la app como alumno.",lockBtn:"Bloquear todo y volver a alumno",noCodesYet:"El admin aún no ha creado códigos.",toStudent:"Seguir como alumno",giveAccess:"Dar acceso con un código",accessNote:"Las cuentas de admin usan tu código de admin.",codeSetFor:"Código creado para",hasCode:"Código",lockShort:"Bloquear",account:"Cuenta",
+  forgot:"¿Olvidaste el código?",forgotNote:"Al restablecer se borran el código y todos los datos de la demo en este móvil.",resetBtn:"Borrar y restablecer",
+  changePin:"Cambiar código de admin",oldPin:"Código actual",newPin:"Código nuevo",pinChanged:"Código cambiado",
+  del:"¿Borrar?",cancel:"Cancelar",
+  next:"Próxima clase",noMore:"No hay más clases hoy",dueSoon:"Para pronto",latest:"Últimas noticias",house:"Casa",houses:"Puntos por casa",
+  child:"Tu hijo/a",pub:{main:"Inicio",news:"Noticias",events:"Eventos",paper:"BSV Times",login:"Entrar",account:"Mi cuenta"},welcome:"Bienvenidos al British School of Valencia",perDay:"Comedor por día (todo el colegio)",ideasHome:"Ideas para el consejo",reporter:"Reportero/a del BSV",updated:"Mochila se ha actualizado a la versión más reciente.",pubNote:"Esta página está abierta a todos. Aquí nunca aparece información personal como notas, méritos, deberes o códigos.",nextEvents:"Próximamente",latestPaper:"Último BSV Times",readPaper:"Leer el periódico",goAccount:"Ir a mi cuenta",mainBtn:"Inicio",loggedAs:"Has entrado en tu cuenta.",ideasPub:"Ideas para el consejo de alumnos",ideaBox:"Buzón de ideas",ideaBoxNote:"Cada idea va al consejo de alumnos. Las ideas se traducen solas al inglés y al español.",anon:"Enviar sin mi nombre",anonName:"Anónimo",vote:"De acuerdo",votes:"de acuerdo",translated:"Traducido",showOrig:"Ver original",showTr:"Ver traducción",translating:"Traduciendo…",notTranslated:"Aún sin traducir",translateBtn:"Traducir",ideaStatus:{new:"Nueva",discussed:"Hablada",done:"Hecha",later:"Ahora no"},sortTop:"Más apoyadas",sortNew:"Más nuevas",noIdeas:"Aún no hay ideas. ¡Sé el primero!",errLog:"Registro de errores",errNote:"Errores que la app detectó y reparó sola. Copia esta lista y envíasela a Claude para arreglar el código.",noErrors:"No hay errores. Todo funciona.",copy:"Copiar",copied:"Copiado",clearLog:"Borrar",repaired:"Algo salió mal, pero la app se reparó sola.",broken:"Algo salió mal y la app no pudo repararse sola.",repairBtn:"Reparar app",repairNote:"Al reparar se restablecen los datos de ejemplo en este móvil. Las cuentas, los códigos y tu código de admin se quedan.",absReason:{sick:"Enfermo/a",late:"Llega tarde",appointment:"Cita",other:"Otro"},reportBtn:"Avisar ausencia",reported:"Avisado",date:"Fecha",note:"Nota (opcional)",noAbs:"No hay ausencias avisadas.",
+  addUser:"Añadir cuenta",lastAdmin:"Siempre tiene que haber un admin y una cuenta de alumno.",stuLoginTitle:"Entrar",stuLoginText:"Introduce tu propio código de alumno de 6 cifras. Te lo da el colegio. No lo compartas.",codeLabel:"Código de alumno (6 cifras)",login:"Entrar",logout:"Salir",wrongCode:"Ese código no es correcto.",tooMany:"Demasiados intentos. Espera {s} segundos.",studentCode:"Código",newCode:"Código nuevo",codeNote:"Cada alumno entra con su propio código de 6 cifras. Dáselo al alumno en persona. Crea uno nuevo si otra persona lo sabe.",newCodeMade:"Código nuevo para",noCodeStudents:"Aún no hay cuentas de alumno en esta clase.",codesNote:"Solo el personal, la dirección y el admin pueden ver estos códigos. Los alumnos y las familias nunca los ven. Dale el código al alumno en persona.",showCode:"Ver",hideCode:"Ocultar",nameTaken:"Ese nombre ya se usa para este tipo de cuenta.",pastDate:"Elige una fecha a partir de hoy.",articleIncomplete:"El artículo {n} no está completo. Rellena el titular y el texto, o déjalo vacío.",noArticles:"Añade al menos un artículo, o aprueba uno enviado por un alumno.",claimedBy:"Reclamado por",handOver:"Entregado",handed:"Entregado",search:"Buscar",noResults:"No se ha encontrado nada.",weekendNote:"Es fin de semana. Se muestra el horario del lunes.",doneWord:"hecho",hwlistTab:"Deberes",calTab:"Calendario",wk:["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"],nothingDay:"Nada previsto.",prevM:"Mes anterior",nextM:"Mes siguiente",submitTitle:"Escribe para The BSV Times",submitBtn:"Enviar a la redacción",subNote:"Secretaría lee tu artículo antes de publicarlo en el periódico.",yourSubs:"Tus artículos",status:{pending:"En espera",approved:"Aprobado",published:"Publicado",rejected:"No aceptado"},fromStudents:"Enviados por alumnos",approve:"Aprobar",reject:"Rechazar",willInclude:"Los artículos aprobados entran solos en el próximo número.",subSent:"Artículo enviado",time:"Hora (si llega tarde)",at:"a las",badge:"Insignia",nextBadge:"{n} méritos más para {b}",topBadge:"¡Has llegado a la insignia más alta!",noBadge:"Aún sin insignia",badges:[["Bronce","#b0703a"],["Plata","#7f8b97"],["Oro","#c9a227"],["Platino","#3f97ad"]],
+  subj:{Maths:"Matemáticas",English:"Inglés",Spanish:"Español",Science:"Ciencias",History:"Historia",PE:"Ed. Física",Art:"Arte",Music:"Música",Break:"Recreo",Lunch:"Comida",Geography:"Geografía",Computing:"Informática",Free:"Libre",French:"Francés",Drama:"Teatro"}}
+};
+const ROLE_TABS={student:["home","today","hw","me","school"],parent:["home","me","hw","absence","school"],staff:["teach","assign","pupils","day","school"],office:["classes","comms","lunchlist","absent","lostm"],head:["overview","comms","pupils","users","school"],admin:["users","overview"]};
+const GROUPS={hw:["hwlist","calendar"],me:["grades","points"],pupils:["give","marks","codes"],classes:["timetables","codes"],day:["absent","lunchlist"],over:["overview","lunchlist"],comms:["post","publish","manage"]};
+const seg={hw:"hwlist",me:"grades",pupils:"give",classes:"timetables",day:"lunchlist",over:"overview",comms:"post"};
+const I=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const CAL='<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>';
+const ICON={home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',today:CAL,teach:CAL,classes:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+ hw:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21V5M9 8h6"/>',me:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+ school:'<path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/>',assign:'<path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"/>',
+ pupils:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5M16 11a3 3 0 1 0 0-6M21 20c0-2.5-1.8-4.3-4-4.8"/>',
+ absent:'<path d="M14 14V5a2 2 0 0 0-4 0v9a4 4 0 1 0 4 0z"/>',absence:'<path d="M14 14V5a2 2 0 0 0-4 0v9a4 4 0 1 0 4 0z"/>',
+ comms:'<path d="M3 11v2a1 1 0 0 0 1 1h3l6 4V6L7 10H4a1 1 0 0 0-1 1zM17 8a5 5 0 0 1 0 8"/>',day:'<path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 3c-2 2-2 6 0 8v10"/>',lunchlist:'<path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 3c-2 2-2 6 0 8v10"/>',
+ lostm:'<path d="M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10"/>',overview:'<path d="M4 20V10M10 20V4M16 20v-7M3 20h18"/>',users:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>'};
+function group(t,g){const items=GROUPS[g];if(!items.includes(seg[g]))seg[g]=items[0];const inner=VIEWS[seg[g]](t).replace(/<h2>[\s\S]*?<\/h2>/,"");
+ return `<h2>${t.tabs[g]}</h2><div class="pills seg">${items.map(k=>`<button id="seg-${k}" data-seg="${g}:${k}" aria-pressed="${k===seg[g]}">${t.tabs[k]}</button>`).join("")}</div>${inner}`}
+function sechead(t,label,go,hubKey){const can=ROLE_TABS[role()].includes(go);return `<div class="sechead"><h3>${label}</h3>${can?`<button data-tab="${go}"${hubKey?` data-hubset="${hubKey}"`:""}>${t.seeAll} →</button>`:""}</div>`}
+const HUB={student:["news","paper","events","life","lost"],parent:["news","paper","events","life"],staff:["news","paper","events","life","lost"],head:["news","paper","events","life","lost"]};
+const TIMES=["09:00","10:00","11:00","11:20","12:20","13:20","14:20","15:20"],END="16:20";
+const POOL=["Maths","English","Spanish","Science","History","Geography","Art","Music","Computing","PE","French","Drama"];
+const CORE=["Maths","English","Spanish","Science","History","Geography","French","Computing","Art","Music","PE","Drama"];
+function timetable(c,d){const k=CLASSES.indexOf(c),out=[];let j=0;for(let i=0;i<8;i++){if(i===2){out.push("Break");continue}if(i===5){out.push("Lunch");continue}out.push(POOL[(k*5+d*3+j*5)%POOL.length]);j++}return out}
+const TEACH=[[0,1,null,2,"F",null,3,"F"],[4,0,null,"F",5,null,1,"F"],["F",6,null,0,7,null,"F",2],[2,0,null,1,"F",null,3,"F"],[4,"F",null,0,2,null,"F",1]].map(r=>r.map(x=>x===null?null:x==="F"?"F":CLASSES[[0,1,8,12,4,16,5,13][x]]));
+const CLASS_SIZE=[25,24,26,25,23,27,25,25,26,24,25,25,24,26,25,25,27,23,25,25];
+const FIRST=["Lucía","Oliver","Mateo","Emma","Hugo","Chloe","Pablo","Isabel","Leo","Sofía","Daniel","Martina","Álvaro","Grace","Lucas","Valeria","Jack","Carmen","Noah","Paula","Marco","Alba","Ethan","Julia","Diego","Lily","Adrián","Nora","Samuel","Elena","Max","Vega","Thomas","Irene","Javier","Ava","Bruno","Clara","Oscar","Ana"];
+const genNames=c=>{const k=CLASSES.indexOf(c),n=CLASS_SIZE[k]||25,out=[],seen=new Set();let i=0;while(out.length<n){const nm=`${FIRST[(k*11+i*7)%FIRST.length]} ${"ABCDEFGHIJKLMNOPRSTUVWZ"[(k*5+i*3)%23]}.`;if(!seen.has(nm)){seen.add(nm);out.push(nm)}i++}return out};
+const NAMES=["Lucía P.","Oliver S.","Mateo R.","Emma W.","Hugo L.","Chloe B.","Pablo N.","Isabel T."];
+const houseOf=n=>n===KAS?"turia":HOUSES[[...String(n)].reduce((a,c)=>a+c.charCodeAt(0),0)%4].id;
+const MENU={en:["Lentil soup","Chicken with rice","Veggie pasta","Fruit or yoghurt"],es:["Sopa de lentejas","Pollo con arroz","Pasta vegetal","Fruta o yogur"]};
+const CLUBS=[{d:0,en:"Chess club",es:"Club de ajedrez",r:"Room 12"},{d:1,en:"Coding club",es:"Club de programación",r:"ICT 2"},{d:2,en:"Football",es:"Fútbol",r:"Pitch"},{d:3,en:"Choir",es:"Coro",r:"Music room"},{d:4,en:"Debate club",es:"Club de debate",r:"Library"}];
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const TODAY=iso(new Date());
+const addDays=(s,n)=>{const d=new Date(s+"T12:00");d.setDate(d.getDate()+n);return iso(d)};
+const daysBetween=(a,b)=>Math.round((new Date(b+"T12:00")-new Date(a+"T12:00"))/864e5);
+const SEED=()=>({v:6,done:{},lunch:{},errors:[],ideas:[{id:1,text:"More benches in the playground",lang:"en",tr:{en:"More benches in the playground",es:"Más bancos en el patio"},by:"Emma W.",anon:true,date:addDays(TODAY,-3),votes:["Lucía P.","Oliver S.","Hugo L."],status:"discussed"},{id:2,text:"Un torneo de ajedrez en el recreo",lang:"es",tr:{en:"A chess tournament at break time",es:"Un torneo de ajedrez en el recreo"},by:"Mateo R.",anon:false,date:addDays(TODAY,-1),votes:["Pablo N."],status:"new"}],markLog:[],subs:[],
+ hw:[{id:1,type:"hw",task:"Read chapter 3",task_es:"Leer el capítulo 3",subject:"English",due:addDays(TODAY,2),cls:"Year 7B",by:"Ms Lane"},
+     {id:2,type:"hw",task:"Fractions worksheet",task_es:"Ficha de fracciones",subject:"Maths",due:addDays(TODAY,3),cls:"Year 7B",by:"Mr Carter"},
+     {id:3,type:"test",task:"Test: cells and organelles",task_es:"Examen: células y orgánulos",subject:"Science",due:addDays(TODAY,4),cls:"Year 7B",by:"Ms Ortiz"},
+     {id:4,type:"test",task:"Vocabulary test unit 2",task_es:"Examen de vocabulario, unidad 2",subject:"Spanish",due:addDays(TODAY,16),cls:"Year 7B",by:"Sra. Gil"},
+     {id:5,type:"hw",task:"Map of the river Turia",task_es:"Mapa del río Turia",subject:"Geography",due:addDays(TODAY,-1),cls:"Year 7B",by:"Mr Ruiz"}],
+ marks:{[KAS]:{Maths:{g:6,t:7,e:"A",c:"Strong on fractions, check your working.",c_es:"Muy bien en fracciones, revisa tus cálculos."},English:{g:5,t:6,e:"B",c:"Good ideas, write longer answers.",c_es:"Buenas ideas, escribe respuestas más largas."},Spanish:{g:7,t:7,e:"A",c:"Excellent speaking.",c_es:"Expresión oral excelente."},Science:{g:5,t:7,e:"B",c:"Revise cell structure for the test.",c_es:"Repasa la estructura de la célula para el examen."},History:{g:6,t:6,e:"A",c:"Well researched project.",c_es:"Proyecto bien investigado."},Geography:{g:4,t:6,e:"C",c:"Hand homework in on time.",c_es:"Entrega los deberes a tiempo."},French:{g:5,t:5,e:"B",c:""},Computing:{g:8,t:7,e:"A",c:"Above target. Great app ideas!",c_es:"Por encima del objetivo. ¡Muy buenas ideas de apps!"}}},
+ points:[{id:1,student:KAS,kind:"merit",reason:"Helped a classmate in Maths",reason_es:"Ayudó a un compañero en Matemáticas",date:addDays(TODAY,-4),by:"Ms Lane"},
+         {id:2,student:KAS,kind:"merit",reason:"Excellent homework",reason_es:"Deberes excelentes",date:addDays(TODAY,-3),by:"Mr Carter"},
+         {id:3,student:KAS,kind:"demerit",reason:"Forgot PE kit",reason_es:"Olvidó la ropa de Ed. Física",date:addDays(TODAY,-5),by:"Mr Diaz"}],
+ events:[{id:1,date:addDays(TODAY,4),en:"Parents' evening",es:"Reunión de padres"},{id:2,date:addDays(TODAY,24),en:"School trip Year 7",es:"Excursión Year 7"},{id:3,date:addDays(TODAY,32),en:"Sports day",es:"Día del deporte"},{id:4,date:addDays(TODAY,-6),en:"Open morning",es:"Jornada de puertas abiertas"}],
+ news:[{id:1,date:TODAY,cat:"dana",active:true,title:"Weather warning (example)",title_es:"Aviso meteorológico (ejemplo)",text:"If a DANA alert is issued, it appears here at the top. It ends when it is ended, or after 2 days.",text_es:"Si hay una alerta DANA, sale aquí arriba. Termina cuando se cierra, o a los 2 días.",by:"Dr Hughes"},
+       {id:2,date:TODAY,cat:"cancel",title:"Year 9 Music cancelled Thursday",title_es:"Música de Year 9 cancelada el jueves",text:"Students go to the library instead.",text_es:"Los alumnos van a la biblioteca.",by:"Ana R."},
+       {id:3,date:addDays(TODAY,-2),cat:"holiday",title:"Half-term next week",title_es:"Vacaciones de mitad de trimestre la semana que viene",text:"No school all week. Back the Monday after.",text_es:"No hay clase en toda la semana. Volvemos el lunes siguiente.",by:"Ana R."},
+       {id:4,date:addDays(TODAY,-3),cat:"public",title:"Public holiday 8 December",title_es:"Festivo el 8 de diciembre",text:"School closed.",text_es:"El colegio está cerrado.",by:"Ana R."},
+       {id:5,date:addDays(TODAY,-4),cat:"dayoff",title:"Staff training day 27 November",title_es:"Día de formación del profesorado, 27 de noviembre",text:"No lessons for students.",text_es:"No hay clase para los alumnos.",by:"Ana R."}],
+ papers:[{no:1,date:addDays(TODAY,-14),articles:[{h:"Welcome to The BSV Times",h_es:"Bienvenidos a The BSV Times",b:"Our first issue. Students write it, students read it.",b_es:"Nuestro primer número. Lo escriben alumnos, lo leen alumnos.",a:"The editors"}]},
+         {no:2,date:addDays(TODAY,-7),articles:[{h:"Year 11 raise money for the food bank",h_es:"Year 11 recauda dinero para el banco de alimentos",b:"The bake sale on Friday raised enough to fill two vans with food.",b_es:"La venta de pasteles del viernes dio para llenar dos furgonetas de comida.",a:"Sofía G., Year 11"},{h:"New coding club starts",h_es:"Empieza el nuevo club de programación",b:"Every Tuesday at lunch in ICT 2. Beginners welcome.",b_es:"Todos los martes a la hora de comer en ICT 2. Principiantes bienvenidos.",a:"Oliver S., Year 9"},{h:"Football: BSV win 3–1",h_es:"Fútbol: el BSV gana 3–1",b:"The Year 8 team won their first match of the season.",b_es:"El equipo de Year 8 ganó su primer partido de la temporada.",a:"Hugo L., Year 8"}]}],
+ lost:[{id:1,item:"Blue water bottle",item_es:"Botella de agua azul",where:"Sports hall",where_es:"Polideportivo",date:addDays(TODAY,-3),claimed:false},{id:2,item:"Black hoodie, size M",item_es:"Sudadera negra, talla M",where:"Library",where_es:"Biblioteca",date:addDays(TODAY,-2),claimed:false},{id:3,item:"Calculator (Casio)",item_es:"Calculadora (Casio)",where:"Room 12",where_es:"Aula 12",date:TODAY,claimed:false}],
+ absences:[],
+ users:[{id:1,n:KAS,r:"admin",c:"Admin"},{id:2,n:KAS,r:"student",c:"Year 7B"},{id:3,n:"Parent of Kas",r:"parent",c:KAS},{id:4,n:"Mr Carter",r:"staff",c:"Maths"},{id:5,n:"Ms Lane",r:"staff",c:"English"},{id:6,n:"Ana R.",r:"office",c:"Office"},{id:7,n:"Dr Hughes",r:"head",c:"Head"}]});
+let S=store.get("mochila-demo",null); if(!S||S.v!==6)S=SEED();S.subs=S.subs||[];S.errors=S.errors||[];S.ideas=(S.ideas||[]).map((x,i)=>typeof x==="string"?{id:Date.now()+i,text:x,lang:"en",by:KAS,anon:true,date:TODAY,votes:[],status:"new"}:x);if(S.doneIds){S.done={[KAS]:S.doneIds};delete S.doneIds}S.done=S.done||{};S.hw.forEach(x=>{if(x.cls==="me"&&!x.owner)x.owner=KAS});if(!S.fix7b){S.users.forEach(u=>{if(u.n===KAS&&u.r==="student"&&u.c==="Year 7A")u.c="Year 7B"});S.hw.forEach(x=>{if(x.id<=5&&x.cls==="Year 7A")x.cls="Year 7B"});S.fix7b=1} delete S.codes;
+let lang=store.get("lang","en"),curId=store.get("cur",2),adminMode=false,loginOpen=false,stuLogin=store.get("stuLogin",null),tries=0,blockUntil=0,tab=null,hub="news",newsCat="all",paperNo=null,viewCls="Year 7A",giveCls="Year 7A",lunchCls="Year 7A",assignCls="Year 7A",stCls=null,newCls="Year 7A",codeCls="Year 7A",newRole="student",draftName="",draftC="",openYear={},
+    adminOK=false,pinMsg="",flash="",pending=null,forgotOpen=false;
+const wd=new Date().getDay(),isWeekday=wd>=1&&wd<=5,todayIdx=isWeekday?wd-1:0;let day=todayIdx;
+const save=()=>store.set("mochila-demo",S);
+const me=()=>S.users.find(u=>u.id===curId)||S.users[0];
+const LEVEL={admin:4,head:3,staff:2,office:2,parent:1,student:1};
+const myLvl=()=>LEVEL[role()];
+const canManage=u=>role()==="admin"||myLvl()>LEVEL[u.r];
+const canGive=r=>role()==="admin"||LEVEL[r]<myLvl();
+const lvlOfName=n=>{const u=S.users.find(x=>x.n===n);return u?LEVEL[u.r]:2};
+const canSeeCodes=()=>adminMode&&["staff","office","head","admin"].includes(role());
+const canEditNews=n=>myLvl()>=lvlOfName(n.by);
+const studentId=()=>(S.users.find(u=>u.r==="student")||S.users[0]).id;
+const isOpen=u=>u.r==="student"||adminMode;
+const adminId=()=>(S.users.find(u=>u.r==="admin")||S.users[0]).id;
+ensureCodes();save();{const u=S.users.find(x=>x.id===curId);if(!u||u.r!=="student")curId=studentId()}
+const role=()=>me().r;
+const stu=()=>{const m=me();if(m&&m.r==="student")return m;if(m&&m.r==="parent"){const c=S.users.find(u=>u.r==="student"&&u.n===m.c);if(c)return c}return S.users.find(u=>u.n===KAS&&u.r==="student")||S.users.find(u=>u.r==="student")||{n:KAS,c:"Year 7A"}};
+const kasClass=()=>stu().c;
+function rnd6(){let x;try{x=crypto.getRandomValues(new Uint32Array(1))[0]}catch(e){x=Math.floor(Math.random()*4294967295)}return String(100000+x%900000)}
+function newCode(){let c;do{c=rnd6()}while(S.users.some(u=>u.code===c));return c}
+function ensureCodes(){S.users.forEach(u=>{if(u.r==="student"&&!u.code)u.code=newCode()})}
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt=(d,o)=>new Date(d+"T12:00").toLocaleDateString(lang==="es"?"es-ES":"en-GB",o);
+const short=d=>fmt(d,{weekday:"short",day:"numeric",month:"short"});
+const mins=s=>+s.slice(0,2)*60+ +s.slice(3);
+const nowMin=()=>{const n=new Date();return n.getHours()*60+n.getMinutes()};
+function isNow(i){const c=nowMin();return day===todayIdx&&isWeekday&&c>=mins(TIMES[i])&&c<(i===7?mins(END):mins(TIMES[i+1]))}
+const opts=(arr,sel)=>arr.map(c=>`<option ${c===sel?"selected":""}>${esc(c)}</option>`).join("");
+const subjOpts=(t,sel)=>CORE.map(s=>`<option value="${s}" ${s===sel?"selected":""}>${t.subj[s]}</option>`).join("");
+const getCls=k=>({viewCls,giveCls,lunchCls,assignCls,stCls,newCls,codeCls})[k];
+function setCls(k,c){if(k==="viewCls")viewCls=c;if(k==="giveCls")giveCls=c;if(k==="lunchCls")lunchCls=c;if(k==="assignCls")assignCls=c;if(k==="stCls")stCls=c;if(k==="newCls")newCls=c;if(k==="codeCls")codeCls=c}
+const shortCls=c=>c.replace("Year ","Y");
+function classPicker(t,k){const cur=getCls(k),curY=+cur.match(/\d+/)[0],open=openYear[k];
+ return `<div class="ypick"><div class="yhead"><span class="note">${t.cls}</span><b>${shortCls(cur)}</b></div><div class="pills">${[7,8,9,10,11].map(y=>`<button type="button" id="y-${k}-${y}" data-year="${k}:${y}" aria-expanded="${open===y}" aria-pressed="${curY===y}">Y${y}${open===y?" ▾":""}</button>`).join("")}</div>${open?`<div class="pills sub">${"ABCD".split("").map(l=>{const c=`Year ${open}${l}`;return `<button type="button" id="c-${k}-${open}${l}" data-pickcls="${k}|${c}" aria-pressed="${c===cur}">Y${open}${l}</button>`}).join("")}</div>`:""}</div>`}
+const dayPills=t=>`<div class="pills">${t.days.map((d,i)=>`<button id="day-${i}" data-day="${i}" aria-pressed="${i===day}">${d}</button>`).join("")}</div>`;
+const nowChip=(i,t)=>isNow(i)?`<span class="chip red">${t.now}</span>`:"";
+const empty=s=>`<div class="empty">${s||"—"}</div>`;
+const flashNote=()=>flash?`<p class="note ok">✓ ${esc(flash)}</p>`:"";
+function delBtn(key,t){return pending===key?`<span class="confirm"><button class="btn danger" data-del="${key}">${t.del}</button><button class="btn ghost" data-cancel="1">${t.cancel}</button></span>`:`<button class="del" data-ask="${key}" aria-label="${t.del}">×</button>`}
+const houseChip=id=>{const h=HOUSES.find(x=>x.id===id);return `<span class="chip" style="background:${h.col};color:#fff">${h.n}</span>`};
+const ttList=(c,t)=>`<div class="list">${timetable(c,day).map((s,i)=>`<div class="row${isNow(i)?" now":""}"><div class="time">${TIMES[i]}</div><div class="what"><b>${t.subj[s]}</b></div>${nowChip(i,t)}</div>`).join("")}</div>`;
+function eventRows(t,manage){const list=[...S.events].filter(e=>manage||e.date>=TODAY).sort((a,b)=>a.date.localeCompare(b.date));
+ return list.map(e=>`<div class="row${e.date<TODAY?" faded":""}"><div class="date"><b>${fmt(e.date,{day:"numeric"})}</b><span>${fmt(e.date,{month:"short"})}</span></div><div class="what"><b>${esc(e[lang]||e.en)}</b><span>${fmt(e.date,{weekday:"long"})}</span></div>${e.date<TODAY?`<span class="chip">${t.past}</span>`:""}${manage?delBtn("ev:"+e.id,t):""}</div>`).join("")||empty()}
+const activeDana=()=>S.news.filter(n=>isAlert(n)&&n.active&&daysBetween(n.date,TODAY)<=2).pop();
+function danaBanner(t){const d=activeDana();return d?`<div class="alert" role="alert"><span class="chip c-dana">${t.cat[d.cat]}</span><div><b>${esc(tr(d,"title"))}</b><p>${esc(tr(d,"text"))}</p></div></div>`:""}
+function newsBlock(t,filter,manage,limit){
+ let items=[...S.news].reverse().filter(n=>!filter||newsCat==="all"||n.cat===newsCat).filter(n=>!filter||match(tr(n,"title")+" "+tr(n,"text"),"news"));if(limit)items=items.slice(0,limit);
+ return `${filter?`<div class="pills">${["all",...CATS].map(c=>`<button id="nc-${c}" data-ncat="${c}" aria-pressed="${c===newsCat}">${c==="all"?t.allNews:t.cat[c]}</button>`).join("")}</div>`:""}
+ <div class="list">${items.map(n=>{const live=isAlert(n)&&n.active&&daysBetween(n.date,TODAY)<=2;return `<div class="row top"><div class="what"><span class="chip c-${n.cat}">${t.cat[n.cat]}</span>${isAlert(n)&&!live?` <span class="chip">${t.ended}</span>`:""}<b style="margin-top:6px">${esc(tr(n,"title"))}</b><span>${fmt(n.date,{day:"numeric",month:"short"})} · ${esc(n.by)}</span><p>${esc(tr(n,"text"))}</p>${(manage||myLvl()>=2)&&live&&canEditNews(n)?`<button class="btn" data-endalert="${n.id}" style="margin-top:8px">${t.endAlert}</button>`:""}</div>${manage&&canEditNews(n)?delBtn("news:"+n.id,t):""}</div>`}).join("")||empty(q.news&&filter?t.noResults:"")}</div>`;
+}
+const tr=(o,f)=>lang==="es"&&o[f+"_es"]?o[f+"_es"]:o[f];
+const errNote=()=>pinMsg?`<p class="note err">${esc(pinMsg)}</p>`:"";
+const q={news:"",lost:""};
+const match=(s,k)=>!q[k]||s.toLowerCase().includes(q[k].toLowerCase());
+let calMonth=TODAY.slice(0,7),calDay=TODAY;
+const BADGE_AT=[5,10,25,50];
+const isDone=(h,n)=>(S.done[n||stu().n]||[]).includes(h.id);
+const isLate=h=>h.due&&h.due<TODAY&&!isDone(h);
+function workRows(t,list,student){
+ return list.map(h=>{const d=isDone(h);return `<div class="row${d?" done":""}">${student&&role()==="student"?`<input type="checkbox" class="check" id="hw-${h.id}" data-done="${h.id}" ${d?"checked":""} aria-label="${esc(h.task)}">`:""}<div class="what"><b>${esc(tr(h,"task"))}</b><span>${esc(t.subj[h.subject]||h.subject)}${h.due?` · ${h.type==="test"?t.on:t.due} ${short(h.due)}`:""} · ${student?(h.by?esc(h.by):t.mine):esc(h.cls)}</span></div>${!student&&h.type!=="test"?(()=>{const r=roster(h.cls),dn=r.filter(n=>isDone(h,n));return `<span class="chip ${dn.length?"c-holiday":""}" title="${esc(dn.join(", "))}">${dn.length}/${r.length} ${t.doneWord}${dn.length?" · "+esc(dn.join(", ").split(" ")[0]):""}</span>`})():""}${isLate(h)&&student?`<span class="chip red">${t.late}</span>`:h.type==="test"?`<span class="chip c-test">${t.test}</span>`:""}${h.cls==="me"?delBtn("hw:"+h.id,t):""}</div>`}).join("")}
+const myWork=()=>S.hw.filter(h=>h.cls===kasClass()||(h.cls==="me"&&h.owner===stu().n));
+const ptRows=(t,list,showName)=>list.map(x=>`<div class="row"><div class="pt ${x.kind}">${x.kind==="merit"?"+1":"−1"}</div><div class="what"><b>${esc(showName?x.student:tr(x,"reason"))}</b><span>${showName?esc(tr(x,"reason"))+" · ":""}${t[x.kind]} · ${fmt(x.date,{day:"numeric",month:"short"})} · ${esc(x.by)}</span></div></div>`).join("");
+function houseTable(t){const sc=HOUSES.map(h=>({...h,p:h.base+S.points.filter(x=>x.kind==="merit"&&houseOf(x.student)===h.id).length})).sort((a,b)=>b.p-a.p),max=sc[0].p;
+ return `<div class="list">${sc.map((h,i)=>`<div class="row"><div class="time">${i+1}</div><div class="what"><b>${h.n}</b><div class="bar"><i style="width:${h.p/max*100}%;background:${h.col};opacity:1"></i></div></div><div class="grade" style="font-size:1.1rem">${h.p}</div></div>`).join("")}</div>`}
+function subForm(t){const mine=S.subs.filter(s=>s.by===stu().n).reverse();
+ return `<div class="card"><b>${t.submitTitle}</b><form id="f-sub"><input id="sH" class="full" required placeholder="${t.phHeadline}" aria-label="${t.phHeadline}"><textarea id="sB" class="full" rows="4" required placeholder="${t.phArticle}" aria-label="${t.phArticle}"></textarea><button>${t.submitBtn}</button></form><p class="note">${t.subNote}</p>${flashNote()}</div>
+ ${mine.length?`<h3>${t.yourSubs}</h3><div class="list">${mine.map(s=>`<div class="row"><div class="what"><b>${esc(s.h)}</b><span>${short(s.date)}</span></div><span class="chip ${s.status==="rejected"?"c-cancel":s.status==="pending"?"":"c-holiday"}">${t.status[s.status]}</span></div>`).join("")}</div>`:""}`}
+function paperView(t,pub){const ps=[...S.papers].sort((a,b)=>b.no-a.no);if(!ps.length)return empty();const p=ps.find(x=>x.no===paperNo)||ps[0];
+ return `<div class="pills">${ps.map(x=>`<button id="paper-${x.no}" data-paper="${x.no}" aria-pressed="${x===p}">${t.issue} ${x.no}</button>`).join("")}</div>
+ <div class="paper"><div class="mast">The BSV Times<small>${t.issue} ${p.no} · ${fmt(p.date,{day:"numeric",month:"long",year:"numeric"})}${p.date===TODAY?` · ${t.newIssue}`:""}</small></div>${p.articles.map(a=>`<article><h4>${esc(tr(a,"h"))}</h4><p>${esc(tr(a,"b"))}</p><span>${pub?t.reporter:esc(a.a)}</span></article>`).join("")}<p class="note" style="text-align:center">${t.editors}</p></div>`}
+const roster=c=>{const real=S.users.filter(u=>u.r==="student"&&u.c===c).map(u=>u.n),gen=genNames(c).filter(n=>!real.includes(n));return [...real,...gen].slice(0,Math.max(real.length,CLASS_SIZE[CLASSES.indexOf(c)]||25))};
+const isStudentIn=(n,c)=>roster(c).includes(n);
+const lunchOf=(n,d)=>(S.lunch[d||TODAY]||{})[n];
+const SCHOOL_SIZE=()=>CLASSES.reduce((s,c)=>s+roster(c).length,0);
+function schoolDays(n){const out=[];let d=TODAY,guard=0;while(out.length<n&&guard<30){const w=new Date(d+"T12:00").getDay();if(w>=1&&w<=5)out.unshift(d);d=addDays(d,-1);guard++}return out}
+function lunchDay(d){const v=Object.values(S.lunch[d]||{});return{yes:v.filter(x=>x==="yes").length,no:v.filter(x=>x==="no").length}}
+const pct=(a,b)=>b?Math.round(a/b*1000)/10:0;
+function lunchCounts(){let yes=0,no=0,all=0;CLASSES.forEach(c=>roster(c).forEach(n=>{all++;const a=lunchOf(n);if(a==="yes")yes++;else if(a==="no")no++}));return{yes,no,none:all-yes-no}}
+function lunchCard(t,who){const a=lunchOf(who),closed=isWeekday&&new Date().getHours()>=10,dis=closed?"disabled":"";
+ if(!isWeekday)return `<div class="card"><b>${t.lunchQ}</b><p class="note">${t.noSchool}</p></div>`;
+ return `<div class="card"><div class="cardhead"><b>${t.lunchQ}</b><span class="note">${a?"✓ "+t.lunchSaved:closed?"":t.lunchDeadline}</span></div><div class="toggle"><button id="l-yes" class="yes" data-lunch="yes" aria-pressed="${a==="yes"}" ${dis}>${t.yes}</button><button id="l-no" class="no" data-lunch="no" aria-pressed="${a==="no"}" ${dis}>${t.no}</button></div>${closed?`<p class="note">${t.lunchClosed}</p>`:""}<p class="note">${t.menu}: ${MENU[lang].join(" · ")}</p></div>`}
+function nextLesson(t){if(!isWeekday)return t.noSchool;const tt=timetable(kasClass(),todayIdx),c=nowMin();for(let i=0;i<8;i++){if(tt[i]==="Break"||tt[i]==="Lunch")continue;const end=i===7?mins(END):mins(TIMES[i+1]);if(c<end)return `${TIMES[i]} · <b>${t.subj[tt[i]]}</b>${c>=mins(TIMES[i])?` <span class="chip red">${t.now}</span>`:""}`}return t.noMore}
+function dueSoon(t){const l=myWork().filter(h=>!isDone(h)&&h.due&&daysBetween(TODAY,h.due)<=3).sort((a,b)=>a.due.localeCompare(b.due));return `<div class="list">${l.length?workRows(t,l,role()==="student"):empty(t.noHw)}</div>`}
+function gradesFor(name){return S.marks[name]||{}}
+function lostList(t,manage){const l=[...S.lost].reverse().filter(x=>match(tr(x,"item")+" "+tr(x,"where"),"lost"));
+ return `<div class="list">${l.map(x=>`<div class="row"><div class="what"><b>${esc(tr(x,"item"))}</b><span>${t.found}: ${esc(tr(x,"where"))} · ${fmt(x.date,{day:"numeric",month:"short"})}${x.claimed&&manage?` · ${t.claimedBy} ${esc(x.claimedBy||"?")}`:""}</span></div>${x.handed?`<span class="chip">${t.handed}</span>`:x.claimed?(manage?`<button class="btn" data-handed="${x.id}">${t.handOver}</button>`:`<span class="chip c-holiday">${t.claimed}</span>`):role()==="student"?`<button class="btn" data-claim="${x.id}">${t.mineBtn}</button>`:""}${manage?delBtn("lost:"+x.id,t):""}</div>`).join("")||empty(q.lost?t.noResults:"")}</div>`}
+const searchBox=(t,k)=>`<input type="search" id="q-${k}" data-search="${k}" value="${esc(q[k])}" placeholder="🔎 ${t.search}" aria-label="${t.search}" class="search">`;
+function calendarView(t){const[y,m]=calMonth.split("-").map(Number),first=new Date(y,m-1,1),days=new Date(y,m,0).getDate(),off=(first.getDay()+6)%7;
+ const items=d=>[...myWork().filter(h=>h.due===d).map(h=>({k:h.type==="test"?"test":"hw",txt:`${t.subj[h.subject]||h.subject}: ${tr(h,"task")}`})),...S.events.filter(e=>e.date===d).map(e=>({k:"ev",txt:e[lang]||e.en}))];
+ let cells="";for(let i=0;i<off;i++)cells+=`<span></span>`;
+ for(let dd=1;dd<=days;dd++){const ds=`${y}-${String(m).padStart(2,"0")}-${String(dd).padStart(2,"0")}`,it=items(ds);
+  cells+=`<button id="cal-${ds}" data-calday="${ds}" class="${ds===TODAY?"today ":""}${ds===calDay?"sel":""}" aria-pressed="${ds===calDay}" aria-label="${ds}">${dd}<i>${it.map(x=>`<em class="dot ${x.k}"></em>`).join("")}</i></button>`}
+ const sel=items(calDay);
+ return `<div class="calhead"><button class="btn ghost" data-cal="-1" aria-label="${t.prevM}">‹</button><b>${first.toLocaleDateString(lang==="es"?"es-ES":"en-GB",{month:"long",year:"numeric"})}</b><button class="btn ghost" data-cal="1" aria-label="${t.nextM}">›</button></div>
+ <div class="cal">${t.wk.map(w=>`<small>${w}</small>`).join("")}${cells}</div>
+ <div class="legend"><span><em class="dot test"></em>${t.test}</span><span><em class="dot hw"></em>${t.homework}</span><span><em class="dot ev"></em>${t.tabs.manage}</span></div>
+ <h3>${short(calDay)}</h3><div class="list">${sel.map(x=>`<div class="row"><em class="dot ${x.k}"></em><div class="what"><b>${esc(x.txt)}</b></div></div>`).join("")||empty(t.nothingDay)}</div>`}
+function badgeCard(t,m){const got=BADGE_AT.filter(n=>m>=n).length,cur=got?t.badges[got-1]:null,next=got<4?BADGE_AT[got]:null,prev=got?BADGE_AT[got-1]:0;
+ return `<div class="card"><div class="cardhead"><b>${t.badge}</b>${cur?`<span class="chip" style="background:${cur[1]};color:#fff">🏅 ${cur[0]}</span>`:`<span class="note">${t.noBadge}</span>`}</div>${next?`<div class="bar"><i style="width:${(m-prev)/(next-prev)*100}%"></i></div><p class="note">${t.nextBadge.replace("{n}",next-m).replace("{b}",t.badges[got][0])}</p>`:`<p class="note">${t.topBadge}</p>`}</div>`}
+let sampleP=null;const getSample=()=>sampleP||(sampleP=(typeof window!=="undefined"&&window.claude&&window.claude.use?Promise.resolve(window.claude.use("sample")):Promise.resolve(null)).catch(()=>null));
+const busyTr=new Set(),failTr=new Set(),showOrig=new Set();let ideaSort="top";
+async function translateIdea(id){const x=S.ideas.find(i=>i.id===id);if(!x||busyTr.has(id))return;busyTr.add(id);failTr.delete(id);render();
+ try{const s=await getSample();if(!s)throw{code:"not_granted"};
+  const r=await s.json('Translate this idea a student wrote for the school council. Reply with only a JSON object {"en": string, "es": string}: the idea in natural English and in natural Spanish (Spain). Keep the meaning and tone, add nothing, no quotes around it.\n\nIdea:\n'+x.text.slice(0,1500),{modelTier:"quick"});
+  if(r&&typeof r.en==="string"&&typeof r.es==="string"&&r.en.trim()&&r.es.trim()){x.tr={en:r.en.trim().slice(0,2000),es:r.es.trim().slice(0,2000)};save()}else throw{code:"invalid_json"}}
+ catch(e){failTr.add(id)}finally{busyTr.delete(id);render()}}
+const ideaText=x=>showOrig.has(x.id)||!x.tr?x.text:(x.tr[lang]||x.text);
+function ideaBox(t){const lvl=myLvl(),isStu=role()==="student",me_=stu().n;
+ const list=[...S.ideas].sort((a,b)=>ideaSort==="top"?(b.votes.length-a.votes.length)||(b.id-a.id):(b.id-a.id));
+ return `<h3>${t.ideaBox}</h3>${isStu?`<div class="card"><form id="f-idea"><textarea id="ideaText" class="full" rows="3" required maxlength="500" placeholder="${t.idea}" aria-label="${t.idea}"></textarea><label class="full chk"><input type="checkbox" id="ideaAnon"> ${t.anon}</label><button>${t.sendIdea}</button></form>${flashNote()}</div>`:""}<p class="note">${t.ideaBoxNote}</p>
+ <div class="pills"><button id="is-top" data-isort="top" aria-pressed="${ideaSort==="top"}">${t.sortTop}</button><button id="is-new" data-isort="new" aria-pressed="${ideaSort==="new"}">${t.sortNew}</button></div>
+ <div class="list">${list.map(x=>{const voted=x.votes.includes(me_),trd=x.tr&&x.tr[lang]&&x.tr[lang]!==x.text;
+  return `<div class="row top"><div class="what"><b>${esc(ideaText(x))}</b><span>${x.anon&&lvl<3?t.anonName:esc(x.by)+(x.anon?` (${t.anonName.toLowerCase()})`:"")} · ${short(x.date)}</span>
+  <div class="ideameta"><span class="chip ${x.status==="done"?"c-holiday":x.status==="later"?"c-cancel":x.status==="discussed"?"c-dayoff":""}">${t.ideaStatus[x.status]}</span>
+  ${busyTr.has(x.id)?`<span class="note">${t.translating}</span>`:x.tr?(trd||showOrig.has(x.id)?`<span class="note">${showOrig.has(x.id)?"":t.translated+" · "}</span><button class="linkbtn" data-orig="${x.id}">${showOrig.has(x.id)?t.showTr:t.showOrig}</button>`:""):`<span class="note">${t.notTranslated}</span>${lvl>=2||x.by===me_?` <button class="linkbtn" data-trans="${x.id}">${t.translateBtn}</button>`:""}`}
+  ${lvl>=2?`<select id="ist-${x.id}" data-istatus="${x.id}" aria-label="Status">${Object.keys(t.ideaStatus).map(k=>`<option value="${k}" ${k===x.status?"selected":""}>${t.ideaStatus[k]}</option>`).join("")}</select>`:""}</div></div>
+  <div class="votebox">${isStu?`<button class="vote${voted?" on":""}" data-vote="${x.id}" aria-pressed="${voted}" aria-label="${t.vote}">👍 ${x.votes.length}</button>`:`<span class="vote">👍 ${x.votes.length}</span>`}${lvl>=2?delBtn("idea:"+x.id,t):""}</div></div>`}).join("")||empty(t.noIdeas)}</div>`}
+function errorLog(t){const l=[...(S.errors||[])].reverse();return `<h3>${t.errLog}</h3><p class="note">${t.errNote}</p><div class="list">${l.map(x=>`<div class="row top"><div class="what"><b>${esc(x.m)}</b><span>${esc(x.d.slice(0,16).replace("T"," "))} · ${esc(x.w)}</span></div></div>`).join("")||empty(t.noErrors)}</div>${l.length?`<div class="confirm"><button class="btn" data-copylog="1">${t.copy}</button><button class="btn ghost" data-clearlog="1">${t.clearLog}</button></div><textarea id="logtxt" readonly rows="3" class="search" style="border-radius:8px" aria-label="${t.errLog}">${esc(l.map(x=>`${x.d} [${x.w}] ${x.m}`).join("\n"))}</textarea>`:""}`}
+function hubView(t){const tabs=HUB[role()];if(!tabs.includes(hub))hub=tabs[0];
+ return `<div class="pills seg">${tabs.map(h=>`<button id="hub-${h}" data-hub="${h}" aria-pressed="${h===hub}">${t.hub[h]}</button>`).join("")}</div>${HUBV[hub](t)}`}
+const HUBV={
+ news:t=>`${danaBanner(t)}${role()==="staff"?`<div class="card"><b>${t.addAlert}</b><form id="f-alert"><select id="alCat" class="full" aria-label="${t.alertType}">${ALERTS.map(c=>`<option value="${c}">${t.cat[c]}</option>`).join("")}</select><input id="alTitle" class="full" required placeholder="${t.phTitle}" aria-label="${t.phTitle}"><textarea id="alText" class="full" rows="2" required placeholder="${t.phText}" aria-label="${t.phText}"></textarea><button>${t.publish}</button></form><p class="note">${t.alertNote}</p></div>`:""}${searchBox(t,"news")}<div id="res-news">${newsBlock(t,true,false)}</div>`,
+ paper:t=>`${paperView(t)}${role()==="student"?subForm(t):""}`,
+ events:t=>`<div class="list">${eventRows(t,false)}</div>`,
+ life:t=>`<h3>${t.council}</h3><div class="list"><div class="row"><div class="what"><p style="margin:0">${t.councilText}</p></div></div></div>${ideaBox(t)}<h3>${t.lunchClubs}</h3><div class="list">${CLUBS.map(c=>`<div class="row"><div class="time">${t.days[c.d]}</div><div class="what"><b>${c[lang]}</b><span>${c.r}</span></div></div>`).join("")}</div>`,
+ lost:t=>`${searchBox(t,"lost")}<div id="res-lost">${lostList(t,false)}</div>`
+};
+
+const VIEWS={
+ home:t=>{const p=role()==="parent",g=gradesFor(stu().n),ks=Object.keys(g),avg=ks.length?(ks.reduce((s,k)=>s+g[k].g,0)/ks.length).toFixed(1):"–",m=S.points.filter(x=>x.student===stu().n&&x.kind==="merit").length,d=S.points.filter(x=>x.student===stu().n&&x.kind==="demerit").length;
+  return `${danaBanner(t)}<h2>${fmt(TODAY,{weekday:"long",day:"numeric",month:"long"})}</h2>
+  ${p?`<div class="card"><span class="note">${t.child}</span><b>${esc(stu().n)} · ${kasClass()}</b> ${houseChip(houseOf(stu().n))}</div><div class="stats"><div class="stat"><b>${avg}</b><span>${t.current} · ${t.outOf}</span></div><div class="stat good"><b>${m}</b><span>${t.merits}</span></div><div class="stat bad"><b>${d}</b><span>${t.demerits}</span></div><div class="stat"><b>${myWork().filter(isLate).length}</b><span>${t.late}</span></div></div>`
+     :`<div class="card"><span class="note">${t.next}</span><div>${nextLesson(t)}</div></div>`}
+  ${lunchCard(t,stu().n)}${sechead(t,t.dueSoon,"hw")}${dueSoon(t)}${role()==="student"?sechead(t,t.ideasHome,"school","life"):""}${sechead(t,t.latest,"school","news")}${newsBlock(t,false,false,2)}`},
+ today:t=>{if(!stCls)stCls=kasClass();return `<h2>${t.tabs.today}</h2>${classPicker(t,"stCls")}${stCls!==kasClass()?`<button class="btn ghost" data-pickcls="stCls|${kasClass()}" style="justify-self:start">← ${t.myClass}: ${shortCls(kasClass())}</button>`:""}${isWeekday?"":`<p class="note">${t.weekendNote}</p>`}${dayPills(t)}${ttList(stCls,t)}`},
+ hwlist:t=>{const mine=myWork().sort((a,b)=>isDone(a)-isDone(b)||(a.due||"9").localeCompare(b.due||"9")),tests=mine.filter(h=>h.type==="test"),work=mine.filter(h=>h.type!=="test");
+  return `<h2>${t.tabs.hw}</h2><h3>${t.tests}</h3><div class="list">${tests.length?workRows(t,tests,true):empty()}</div><h3>${t.homework}</h3><div class="list">${work.length?workRows(t,work,true):empty(t.noHw)}</div>
+  ${role()==="student"?`<form id="f-own"><input id="hwTask" class="full" required placeholder="${t.phTask}" aria-label="${t.phTask}"><select id="hwSubject" aria-label="${t.subject}">${subjOpts(t,"Maths")}</select><input id="hwDue" type="date" min="${TODAY}" aria-label="${t.due}"><button>${t.add}</button></form>${errNote()}`:""}<p class="note">${t.hwNote}</p>`},
+ hw:t=>group(t,"hw"),calendar:t=>`<h2>${t.tabs.calendar}</h2>${calendarView(t)}`,
+ grades:t=>{const g=gradesFor(stu().n),ks=Object.keys(g);if(!ks.length)return `<h2>${t.tabs.grades}</h2>${empty(t.noGrades)}`;const avg=(ks.reduce((s,k)=>s+g[k].g,0)/ks.length).toFixed(1),on=ks.filter(k=>g[k].g>=g[k].t).length;
+  return `<h2>${t.tabs.grades}</h2><div class="stats"><div class="stat"><b>${avg}</b><span>${t.current} · ${t.outOf}</span></div><div class="stat"><b>${on}/${ks.length}</b><span>${t.onTarget}</span></div></div>
+  <div class="list">${ks.map(k=>{const x=g[k],ok=x.g>=x.t;return `<div class="row top"><div class="grade" style="color:var(${ok?"--ok":"--warn"})">${x.g}</div><div class="what"><b>${t.subj[k]||k}</b><span>${t.target} ${x.t} · ${t.effort} ${x.e}</span><div class="bar"><i style="width:${x.g/9*100}%"></i></div>${x.c?`<p>${esc(tr(x,"c"))}</p>`:""}</div></div>`}).join("")}</div>`},
+ points:t=>{const p=S.points.filter(x=>x.student===stu().n).reverse(),m=p.filter(x=>x.kind==="merit").length;
+  return `<h2>${t.tabs.points}</h2><div class="stats"><div class="stat good"><b>${m}</b><span>${t.merits}</span></div><div class="stat bad"><b>${p.length-m}</b><span>${t.demerits}</span></div></div>${badgeCard(t,m)}<div class="list">${ptRows(t,p,false)||empty(t.noPts)}</div><h3>${t.houses} · ${t.house}: ${HOUSES.find(x=>x.id===houseOf(stu().n)).n}</h3>${houseTable(t)}`},
+ school:t=>`<h2>${t.tabs.school}</h2>${hubView(t)}`,
+ codes:t=>{if(!canSeeCodes())return `<h2>${t.tabs.codes}</h2>${empty(t.notAllowed)}`;const list=S.users.filter(u=>u.r==="student"&&u.c===codeCls);return `<h2>${t.tabs.codes}</h2>${classPicker(t,"codeCls")}<div class="list">${list.map(u=>`<div class="row"><div class="what"><b>${esc(u.n)}</b><span>${shortCls(u.c)} · ${t.studentCode}: <code class="code">${shownCodes.has(u.id)?(u.code||"—"):"••••••"}</code></span></div><button class="btn ghost" data-showcode="${u.id}">${shownCodes.has(u.id)?t.hideCode:t.showCode}</button><button class="btn" data-newcode="${u.id}">${t.newCode}</button></div>`).join("")||empty(t.noCodeStudents)}</div><p class="note">${t.codesNote}</p>${flashNote()}`},
+ classes:t=>group(t,"classes"),day:t=>group(t,"day"),
+ me:t=>group(t,"me"),pupils:t=>group(t,"pupils"),comms:t=>group(t,"comms"),
+ absence:t=>{const l=S.absences.filter(a=>a.student===stu().n).sort((a,b)=>b.date.localeCompare(a.date));
+  return `<h2>${t.tabs.absence}</h2><form id="f-abs"><input id="absDate" type="date" value="${TODAY}" min="${TODAY}" required aria-label="${t.date}"><select id="absReason" aria-label="${t.phReason}">${Object.keys(t.absReason).map(k=>`<option value="${k}">${t.absReason[k]}</option>`).join("")}</select><input id="absTime" type="time" class="full" aria-label="${t.time}" title="${t.time}"><input id="absNote" class="full" placeholder="${t.note}" aria-label="${t.note}"><button>${t.reportBtn}</button></form><p class="note">${t.time}</p>${flashNote()}
+  <div class="list">${l.map(a=>`<div class="row"><div class="what"><b>${short(a.date)}</b><span>${t.absReason[a.reason]}${a.time?" "+t.at+" "+esc(a.time):""}${a.note?" · "+esc(a.note):""}</span></div><span class="chip c-holiday">${t.reported}</span>${a.date>=TODAY?delBtn("abs:"+a.id,t):""}</div>`).join("")||empty(t.noAbs)}</div>`},
+ teach:t=>`<h2>${t.tabs.teach}</h2>${isWeekday?"":`<p class="note">${t.weekendNote}</p>`}${dayPills(t)}<div class="list">${TEACH[day].map((l,i)=>`<div class="row${isNow(i)?" now":""}"><div class="time">${TIMES[i]}</div><div class="what"><b>${l===null?t.subj[i===5?"Lunch":"Break"]:l==="F"?t.subj.Free:l}</b>${l&&l!=="F"?`<span>${t.subj[me().c]||esc(me().c)}</span>`:""}</div>${nowChip(i,t)}</div>`).join("")}</div>`,
+ assign:t=>`<h2>${t.tabs.assign}</h2>${classPicker(t,"assignCls")}<form id="f-assign"><input type="hidden" id="aCls" value="${assignCls}"><select id="aSubj" class="full" aria-label="${t.subject}">${subjOpts(t,me().c)}</select><select id="aType" class="full" aria-label="${t.homework}/${t.test}"><option value="hw">${t.homework}</option><option value="test">${t.test}</option></select><input id="aTask" class="full" required placeholder="${t.phTask}" aria-label="${t.phTask}"><input id="aDue" class="full" type="date" min="${TODAY}" required aria-label="${t.due}"><button>${t.send}</button></form>${flashNote()}
+  <div class="list">${workRows(t,S.hw.filter(h=>h.by===me().n).reverse(),false)||empty()}</div><p class="note">${t.hwNote}</p>`,
+ give:t=>`<h2>${t.tabs.give}</h2>${classPicker(t,"giveCls")}<form id="f-give"><input type="hidden" id="gCls" value="${giveCls}"><select id="gKind" class="full" aria-label="${t.merit}/${t.demerit}"><option value="merit">${t.merit}</option><option value="demerit">${t.demerit}</option></select><select id="gStudent" class="full" aria-label="${t.student}">${opts(roster(giveCls))}</select><input id="gReason" class="full" required placeholder="${t.phReason}" aria-label="${t.phReason}"><button>${t.give}</button></form><p class="note">${t.onlyStudents}</p>${flashNote()}
+  <div class="list">${ptRows(t,S.points.filter(x=>x.by===me().n).reverse(),true)||empty()}</div>`,
+ marks:t=>`<h2>${t.tabs.marks}</h2>${classPicker(t,"giveCls")}<form id="f-mark"><input type="hidden" id="mCls" value="${giveCls}"><select id="mSubject" class="full" aria-label="${t.subject}">${subjOpts(t,me().c)}</select><select id="mStudent" class="full" aria-label="${t.student}">${opts(roster(giveCls))}</select><select id="mGrade" aria-label="Grade">${[9,8,7,6,5,4,3,2,1].map(n=>`<option>${n}</option>`).join("")}</select><select id="mEffort" aria-label="${t.effort}">${["A","B","C","D"].map(n=>`<option>${n}</option>`).join("")}</select><input id="mComment" class="full" placeholder="${t.note}" aria-label="${t.note}"><button>${t.save}</button></form>${flashNote()}
+  <div class="list">${S.markLog.filter(x=>x.by===me().n).slice(-6).reverse().map(x=>`<div class="row"><div class="grade" style="font-size:1.2rem">${x.g}</div><div class="what"><b>${esc(x.student)}</b><span>${t.subj[x.subj]} · ${short(x.date)}</span></div></div>`).join("")||empty()}</div><p class="note">${t.outOf}</p>`,
+ absent:t=>{const l=S.absences.filter(a=>a.date>=TODAY).sort((a,b)=>a.date.localeCompare(b.date));return `<h2>${t.tabs.absent}</h2><div class="list">${l.map(a=>`<div class="row"><div class="what"><b>${esc(a.student)}</b><span>${short(a.date)} · ${t.absReason[a.reason]}${a.time?" "+t.at+" "+esc(a.time):""}${a.note?" · "+esc(a.note):""}</span></div>${a.date===TODAY?`<span class="chip c-cancel">${t.now}</span>`:""}</div>`).join("")||empty(t.noAbs)}</div>`},
+ timetables:t=>`<h2>${t.tabs.timetables}</h2>${classPicker(t,"viewCls")}${dayPills(t)}${ttList(viewCls,t)}`,
+ post:t=>`<h2>${t.tabs.post}</h2><form id="f-news"><select id="nCat" class="full" aria-label="${t.cat.general}">${CATS.map(c=>`<option value="${c}">${t.cat[c]}</option>`).join("")}</select><input id="nTitle" class="full" required placeholder="${t.phTitle}" aria-label="${t.phTitle}"><textarea id="nText" class="full" rows="3" required placeholder="${t.phText}" aria-label="${t.phText}"></textarea><button>${t.publish}</button></form>${newsBlock(t,false,true)}`,
+ publish:t=>`<h2>${t.tabs.publish}</h2>${(()=>{const s=S.subs.filter(x=>x.status==="pending"||x.status==="approved");return s.length?`<h3>${t.fromStudents}</h3><div class="list">${s.map(x=>`<div class="row top"><div class="what"><b>${esc(x.h)}</b><span>${esc(x.a)} · ${short(x.date)}</span><p>${esc(x.b)}</p></div>${x.status==="approved"?`<span class="chip c-holiday">${t.status.approved}</span>`:`<span class="confirm"><button class="btn" data-approve="${x.id}">${t.approve}</button><button class="btn ghost" data-reject="${x.id}">${t.reject}</button></span>`}</div>`).join("")}</div><p class="note">${t.willInclude}</p>`:""})()}<form id="f-paper">${[1,2,3].map(i=>`<fieldset class="full"><legend>${t.article} ${i} (${t.optional})</legend><input id="pH${i}" placeholder="${t.phHeadline}" aria-label="${t.phHeadline}"><textarea id="pB${i}" rows="3" placeholder="${t.phArticle}" aria-label="${t.phArticle}"></textarea><input id="pA${i}" placeholder="${t.phAuthor}" aria-label="${t.phAuthor}"></fieldset>`).join("")}<button>${t.pubIssue}</button></form>${errNote()}${flashNote()}${paperView(t)}`,
+ lunchlist:t=>{const c=lunchCounts(),tot=SCHOOL_SIZE(),days=schoolDays(5),cr=roster(lunchCls),cy=cr.filter(n=>lunchOf(n)==="yes").length;
+  return `<h2>${t.tabs.lunchlist}</h2><div class="stats"><div class="stat good"><b>${pct(c.yes,tot)}%</b><span>${t.coming} · ${c.yes}/${tot}</span></div><div class="stat bad"><b>${pct(c.no,tot)}%</b><span>${t.notComing} · ${c.no}/${tot}</span></div></div>
+  <p class="note">${c.none} · ${t.noAnswer} (${pct(c.none,tot)}%). ${t.realCount}</p>
+  <h3>${t.perDay}</h3><div class="list">${days.map(d=>{const x=lunchDay(d),p=pct(x.yes,tot);return `<div class="row"><div class="time">${t.wk[(new Date(d+"T12:00").getDay()+6)%7]}</div><div class="what"><b>${p}% <span class="note" style="font-weight:400">· ${x.yes} ${t.coming.toLowerCase()}</span></b><div class="bar"><i style="width:${Math.min(100,p)}%;background:var(--ok);opacity:1"></i></div></div><span class="note">${fmt(d,{day:"numeric",month:"short"})}</span></div>`}).join("")}</div>
+  ${classPicker(t,"lunchCls")}<p class="note"><b>${shortCls(lunchCls)}</b>: ${cy}/${cr.length} ${t.coming.toLowerCase()} · ${pct(cy,cr.length)}%</p>
+  <div class="list">${cr.map(n=>{const a=lunchOf(n);return `<div class="row"><div class="what"><b>${esc(n)}</b></div><span class="chip ${a==="yes"?"c-holiday":a==="no"?"c-cancel":""}">${a==="yes"?t.coming:a==="no"?t.notComing:t.noAnswer}</span></div>`}).join("")}</div>`},
+ lostm:t=>`<h2>${t.tabs.lostm}</h2><form id="f-lost"><input id="lItem" class="full" required placeholder="${t.phItem}" aria-label="${t.phItem}"><input id="lWhere" class="full" required placeholder="${t.phWhere}" aria-label="${t.phWhere}"><button>${t.addItem}</button></form>
+  ${searchBox(t,"lost")}<div id="res-lost">${lostList(t,true)}</div>`,
+ manage:t=>`<h2>${t.tabs.manage}</h2><form id="f-event"><input id="eTitle" class="full" required placeholder="${t.phTitle}" aria-label="${t.phTitle}"><input id="eDate" type="date" min="${TODAY}" required class="full" aria-label="${t.date}"><button>${t.addEvent}</button></form>${errNote()}<div class="list">${eventRows(t,true)}</div>`,
+ overview:t=>{const m=S.points.filter(x=>x.kind==="merit").length,c=lunchCounts();return `${role()==="admin"?errorLog(t):""}${danaBanner(t)}<h2>${t.tabs.overview}</h2><div class="stats"><div class="stat"><b>${SCHOOL_SIZE()}</b><span>${t.st.students}</span></div><div class="stat"><b>${CLASSES.length}</b><span>${t.st.classes}</span></div><div class="stat good"><b>${m}</b><span>${t.st.merits}</span></div><div class="stat bad"><b>${S.points.length-m}</b><span>${t.st.demerits}</span></div><div class="stat"><b>${pct(c.yes,SCHOOL_SIZE())}%</b><span>${t.st.lunchYes} · ${c.yes}</span></div><div class="stat"><b>${S.absences.filter(a=>a.date===TODAY).length}</b><span>${t.st.absent}</span></div></div><h3>${t.perDay}</h3><div class="list">${schoolDays(5).map(d=>{const x=lunchDay(d),p=pct(x.yes,SCHOOL_SIZE());return `<div class="row"><div class="time">${t.wk[(new Date(d+"T12:00").getDay()+6)%7]}</div><div class="what"><b>${p}%</b><div class="bar"><i style="width:${Math.min(100,p)}%;background:var(--ok);opacity:1"></i></div></div></div>`}).join("")}</div><h3>${t.houses}</h3>${houseTable(t)}`},
+ users:t=>{const admins=S.users.filter(u=>u.r==="admin").length,list=[...S.users].sort((a,b)=>LEVEL[b.r]-LEVEL[a.r]),mine=myLvl();
+  return `<h2>${t.tabs.users}</h2><h3>${t.power}</h3><div class="list">${[4,3,2,1].map(l=>`<div class="row${l===mine?" now":""}"><div class="lv l${l}">${5-l}</div><div class="what"><b>${t.lvl[l]}</b><span>${S.users.filter(u=>LEVEL[u.r]===l).length} · ${t.tabs.users.toLowerCase()}</span></div>${l===mine?`<span class="chip red">${lang==="es"?"Tú":"You"}</span>`:""}</div>`).join("")}</div><p class="note">${t.powerNote}</p>
+  <div class="list">${list.map(u=>{const lockRole=(u.r==="admin"&&admins===1)||(u.r==="student"&&S.users.filter(x=>x.r==="student").length===1)||!canManage(u)||u.id===curId;return `<div class="row"><div class="lv l${LEVEL[u.r]}" title="${t.level} ${5-LEVEL[u.r]}">${5-LEVEL[u.r]}</div><div class="what"><b>${esc(u.n)}</b><span>${esc(u.c)}${u.r==="student"&&canSeeCodes()?` · ${t.studentCode}: <code class="code">${shownCodes.has(u.id)?(u.code||"—"):"••••••"}</code> <button class="linkbtn" data-showcode="${u.id}">${shownCodes.has(u.id)?t.hideCode:t.showCode}</button> · <button class="linkbtn" data-newcode="${u.id}">${t.newCode}</button>`:""}</span></div>${lockRole?`<span class="chip">${t.roles[u.r]}</span>`:`<select id="u-${u.id}" data-user="${u.id}" aria-label="${t.role}">${ROLES.filter(r=>canGive(r)||r===u.r).map(r=>`<option value="${r}" ${r===u.r?"selected":""}>${t.roles[r]}</option>`).join("")}</select>`}${lockRole?"":delBtn("user:"+u.id,t)}</div>`}).join("")}</div><p class="note">${t.lastAdmin}</p><p class="note">${t.codeNote}</p>${flashNote()}
+  <h3>${t.addUser}</h3><form id="f-user"><input id="uName" class="full" required value="${esc(draftName)}" placeholder="${t.phName}" aria-label="${t.phName}"><select id="uRole" class="full" aria-label="${t.role}">${ROLES.filter(canGive).map(r=>`<option value="${r}" ${r===newRole?"selected":""}>${t.roles[r]}</option>`).join("")}</select>${newRole==="student"?`<div class="full">${classPicker(t,"newCls")}</div><input type="hidden" id="uCls" value="${newCls}">`:`<input id="uC" class="full" value="${esc(draftC)}" placeholder="${t.phClassSubj}" aria-label="${t.phClassSubj}">`}<button>${t.addUser}</button></form>${errNote()}
+  ${role()==="admin"?`<h3>${t.changePin}</h3>`:""}<form id="f-chpin" ${role()==="admin"?"":"hidden"}><input id="cp0" type="password" inputmode="numeric" autocomplete="off" required placeholder="${t.oldPin}" aria-label="${t.oldPin}" class="full"><input id="cp1" type="password" inputmode="numeric" autocomplete="off" required placeholder="${t.newPin}" aria-label="${t.newPin}"><input id="cp2" type="password" inputmode="numeric" autocomplete="off" required placeholder="${t.repeatPin}" aria-label="${t.repeatPin}"><button>${t.changePin}</button></form>${pinMsg?`<p class="note err">${pinMsg}</p>`:""}${flashNote()}
+  <div class="lock">🔒 <span>${t.lockNote}</span></div><button class="btn" data-lock="1" style="justify-self:start">${t.lockBtn}</button>`}
+};
+
+const pinHash=s=>{let x=5381;for(const c of "mochila:"+s)x=((x*33)^c.charCodeAt(0))>>>0;return x.toString(36)};
+function stuLoginView(t){const wait=Math.ceil((blockUntil-Date.now())/1000);
+ return `<section class="sec"><h2>${t.stuLoginTitle}</h2><p class="note">${t.stuLoginText}</p><form id="f-stu"><input id="stuCode" class="full codein" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="off" required placeholder="••••••" aria-label="${t.codeLabel}"><button ${wait>0?"disabled":""}>${t.login}</button></form>${wait>0?`<p class="note err">${t.tooMany.replace("{s}",wait)}</p>`:errNote()}<p class="note">${t.codeLabel}</p></section>`}
+function lockView(t){const has=!!store.get("adminPin",null);
+ const pinIn=(id,ph)=>`<input id="${id}" class="full" type="password" inputmode="numeric" autocomplete="off" required placeholder="${ph}" aria-label="${ph}">`;
+ const body=has?`<form id="f-pin">${pinIn("pin1",t.enterPin)}<button>${t.unlock}</button></form>`:`<form id="f-pin">${pinIn("pin1",t.setPin)}${pinIn("pin2",t.repeatPin)}<button>${t.setBtn}</button></form>`;
+ return `<section class="sec"><h2>🔒 ${t.lockTitle}</h2>${body}${pinMsg?`<p class="note err">${pinMsg}</p>`:""}<p class="note">${t.pinNote}</p>
+ <button class="btn ghost" data-tostudent="1" style="justify-self:start">${t.toStudent}</button>
+ ${has?(forgotOpen?`<div class="card"><p class="note">${t.forgotNote}</p><span class="confirm"><button class="btn danger" data-reset="1">${t.resetBtn}</button><button class="btn ghost" data-cancel="1">${t.cancel}</button></span></div>`:`<button class="linkbtn" data-forgot="1">${t.forgot}</button>`):""}</section>`}
+
+let notice="";let viewPublic=true,ptab="main";
+const APP_VERSION="27";{const old=store.get("appver",null);store.set("appver",APP_VERSION);if(old&&old!==APP_VERSION)notice="__updated__"}const shownCodes=new Set();
+const safe=(name,fn)=>e=>{try{fn(e)}catch(err){logErr(err,"action: "+name);try{render()}catch(x){}}};
+if(typeof window!=="undefined"&&window.addEventListener){window.addEventListener("error",e=>logErr(e.error||e.message,"page"));window.addEventListener("unhandledrejection",e=>logErr(e.reason,"page"))}
+function logErr(e,where){try{S.errors=(S.errors||[]).concat({d:new Date().toISOString(),w:where,m:String((e&&(e.message||e.code))||e).slice(0,240)}).slice(-30);save()}catch(x){}}
+function repairData(){const d=SEED();for(const k in d){if(S[k]===undefined||S[k]===null||Array.isArray(d[k])!==Array.isArray(S[k])||typeof S[k]!==typeof d[k])S[k]=d[k]}
+ S.users=S.users.filter(u=>u&&u.n&&LEVEL[u.r]);if(!S.users.some(u=>u.r==="admin"))S.users.push({id:Date.now(),n:KAS,r:"admin",c:"Admin"});if(!S.users.some(u=>u.r==="student"))S.users.push({id:Date.now()+1,n:KAS,r:"student",c:"Year 7A"});
+ for(const k of["hw","news","events","lost","points","subs","absences","papers","ideas"])S[k]=S[k].filter(x=>x&&typeof x==="object");
+ S.ideas.forEach(x=>{if(!Array.isArray(x.votes))x.votes=[];if(!x.status)x.status="new";if(!x.text)x.text="—"});
+ if(!S.users.some(u=>u.id===curId))curId=studentId();ensureCodes();save()}
+function repairAll(){const keep={users:S.users,errors:S.errors};S=SEED();S.users=keep.users;S.errors=keep.errors;repairData();tab=null;notice=T[lang].repaired}
+function brokenView(t){return `<section class="sec"><h2>⚠️ ${t.broken}</h2><p class="note">${t.repairNote}</p><button class="btn" data-repairall="1" style="justify-self:start">${t.repairBtn}</button></section>`}
+function render(){const t=T[lang]||T.en;
+ try{renderInner()}
+ catch(e){logErr(e,"screen: "+(tab||"start"));
+  try{tab=null;pending=null;openYear={};flash="";repairData();renderInner();notice=t.repaired;const m=document.getElementById("main");m.innerHTML=`<p class="note ok">🔧 ${notice}</p>`+m.innerHTML;notice=""}
+  catch(e2){logErr(e2,"repair");document.getElementById("tabs").innerHTML="";document.getElementById("main").innerHTML=brokenView(t)}}}
+const PUB_TABS=["main","news","events","paper","login"];
+const PICON={main:ICON.home,news:ICON.comms,events:CAL,paper:ICON.hw,login:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'};
+const pubHead=(t,label,go)=>`<div class="sechead"><h3>${label}</h3><button data-ptab="${go}">${t.seeAll} →</button></div>`;
+function pubIdeas(t){const l=[...S.ideas].sort((a,b)=>b.votes.length-a.votes.length).slice(0,3);return l.length?`<h3>${t.ideasPub}</h3><div class="list">${l.map(x=>`<div class="row"><div class="what"><b>${esc(x.tr&&x.tr[lang]||x.text)}</b><span>${t.ideaStatus[x.status]||""}</span></div><span class="vote">👍 ${x.votes.length}</span></div>`).join("")}</div>`:""}
+const PUBV={
+ main:t=>{const up=[...S.events].filter(e=>e.date>=TODAY).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,3),ps=[...S.papers].sort((a,b)=>b.no-a.no)[0];
+  return `${danaBanner(t)}<h2>${t.welcome}</h2><p class="note">${fmt(TODAY,{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</p>
+  ${pubHead(t,t.latest,"news")}${newsBlock(t,false,false,3)}
+  ${pubHead(t,t.nextEvents,"events")}<div class="list">${up.map(e=>`<div class="row"><div class="date"><b>${fmt(e.date,{day:"numeric"})}</b><span>${fmt(e.date,{month:"short"})}</span></div><div class="what"><b>${esc(e[lang]||e.en)}</b><span>${fmt(e.date,{weekday:"long"})}</span></div></div>`).join("")||empty()}</div>
+  <div class="card"><b>${t.menu}</b><p class="note">${isWeekday?MENU[lang].join(" · "):t.noSchool}</p></div>
+  ${ps?`${pubHead(t,t.latestPaper,"paper")}<div class="list">${ps.articles.slice(0,3).map(a=>`<div class="row"><div class="what"><b>${esc(tr(a,"h"))}</b><span>${t.issue} ${ps.no}</span></div></div>`).join("")}</div>`:""}
+  <h3>${t.houses}</h3>${houseTable(t)}
+  <h3>${t.lunchClubs}</h3><div class="list">${CLUBS.map(c=>`<div class="row"><div class="time">${t.days[c.d]}</div><div class="what"><b>${c[lang]}</b><span>${c.r}</span></div></div>`).join("")}</div>
+  ${pubIdeas(t)}<div class="lock">🔓 <span>${t.pubNote}</span></div>`},
+ news:t=>`${danaBanner(t)}<h2>${t.pub.news}</h2>${searchBox(t,"news")}<div id="res-news">${newsBlock(t,true,false)}</div>`,
+ events:t=>`<h2>${t.pub.events}</h2><div class="list">${eventRows(t,false)}</div>`,
+ paper:t=>`<h2>${t.pub.paper}</h2>${paperView(t,true)}`,
+ login:(t,logged)=>logged||adminMode?`<h2>${t.pub.account}</h2><p class="note">${t.loggedAs}</p><button class="btn" data-leavepublic="1" style="justify-self:start">${t.goAccount} →</button>`:stuLoginView(t)
+};
+function renderInner(){
+ const logged=S.users.find(u=>u.id===stuLogin&&u.r==="student");
+ if(!adminMode){if(logged)curId=logged.id;else if(me().r!=="student")curId=studentId()}
+ const t=T[lang];document.documentElement.lang=lang;const r=role();
+ const mb=document.getElementById("mainbtn");
+ if(!adminMode&&!logged&&!loginOpen)viewPublic=true;
+ if(viewPublic&&!loginOpen){
+  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===lang));
+  document.getElementById("who").textContent="";
+  for(const id of["role","lockall","logout"]){const x=document.getElementById(id);if(x)x.hidden=true}
+  const ab=document.getElementById("adminbtn");if(ab){ab.hidden=adminMode;ab.textContent="🔑 "+t.adminBtn}if(mb)mb.hidden=true;
+  if(!PUB_TABS.includes(ptab))ptab="main";
+  document.getElementById("tabs").innerHTML=PUB_TABS.map(k=>`<button id="ptab-${k}" role="tab" data-ptab="${k}" aria-selected="${k===ptab}">${I(PICON[k])}<span>${k==="login"&&(logged||adminMode)?t.pub.account:t.pub[k]}</span></button>`).join("");
+  document.getElementById("main").innerHTML=`<section class="sec">${notice?`<p class="note ok">✨ ${notice==="__updated__"?t.updated:notice}</p>`:""}${PUBV[ptab](t,logged)}</section>`;notice="";return}
+ if(mb){mb.hidden=false;mb.textContent="🏫 "+t.mainBtn}
+ if(!ROLE_TABS[r].includes(tab))tab=ROLE_TABS[r][0];
+ document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===lang));
+ document.getElementById("role").innerHTML=S.users.map(u=>`<option value="${u.id}" ${u.id===curId?"selected":""}>${t.viewAs}: ${esc(u.n)} · ${t.roles[u.r]}</option>`).join("");
+ document.getElementById("who").textContent=`${me().n} · ${r==="student"?kasClass():t.roles[r]}`;
+ const sel=document.getElementById("role"),lk=document.getElementById("lockall"),ab=document.getElementById("adminbtn");
+ const lo=document.getElementById("logout");if(lo){lo.hidden=adminMode||!logged;lo.textContent=t.logout}
+ sel.hidden=!adminMode;if(lk){lk.hidden=!adminMode;lk.textContent="🔒 "+t.lockShort}if(ab){ab.hidden=adminMode||loginOpen;ab.textContent="🔑 "+t.adminBtn}
+ if(loginOpen&&!adminMode){document.getElementById("tabs").innerHTML="";document.getElementById("main").innerHTML=lockView(t);return}
+ if(!adminMode&&!logged){document.getElementById("tabs").innerHTML="";document.getElementById("who").textContent="";document.getElementById("main").innerHTML=stuLoginView(t);return}
+ if(!isOpen(me())){document.getElementById("tabs").innerHTML="";document.getElementById("main").innerHTML=lockView(t);return}
+ document.getElementById("tabs").innerHTML=ROLE_TABS[r].map(k=>`<button id="tab-${k}" role="tab" data-tab="${k}" aria-selected="${k===tab}">${I(ICON[k])}<span>${t.tabs[k]}</span></button>`).join("");
+ document.getElementById("main").innerHTML=`<section class="sec">${notice?`<p class="note ok">${notice==="__updated__"?"✨ "+t.updated:"🔧 "+notice}</p>`:""}${VIEWS[tab](t)}<p class="note">${t.demoNote}</p></section>`;notice="";
+}
+function doDelete(key){const[k,id]=key.split(":"),n=+id;
+ if(k==="hw")S.hw=S.hw.filter(x=>x.id!==n);if(k==="ev")S.events=S.events.filter(x=>x.id!==n);if(k==="news")S.news=S.news.filter(x=>x.id!==n||!canEditNews(x));
+ if(k==="lost")S.lost=S.lost.filter(x=>x.id!==n);if(k==="idea"&&myLvl()>=2)S.ideas=S.ideas.filter(x=>x.id!==n);if(k==="abs")S.absences=S.absences.filter(x=>x.id!==n);
+ if(k==="user"){const u=S.users.find(x=>x.id===n);if(u&&canManage(u)&&!(u.r==="admin"&&S.users.filter(x=>x.r==="admin").length===1)&&!(u.r==="student"&&S.users.filter(x=>x.r==="student").length===1)&&n!==curId){S.users=S.users.filter(x=>x.id!==n)}}
+ save()}
+
+document.addEventListener("click",safe("click",e=>{
+ const b=e.target.closest("button");if(!b||(b.closest("form")&&b.type!=="button"))return;const d=b.dataset;
+ const keepPending=d.ask||d.del;if(!keepPending)pending=null;
+ if(d.lang){lang=d.lang;store.set("lang",lang)}
+ else if(d.tab){tab=d.tab;shownCodes.clear();if(d.hubset)hub=d.hubset;flash="";pinMsg="";if(typeof window!=="undefined"&&window.scrollTo)window.scrollTo(0,0)}
+ else if(d.seg){const[g,k]=d.seg.split(":");seg[g]=k;flash="";pinMsg=""}
+ else if(d.hub){hub=d.hub;flash="";pinMsg=""}
+ else if(d.day)day=+d.day;
+ else if(d.year){const[k,y]=d.year.split(":");openYear[k]=openYear[k]===+y?null:+y}
+ else if(d.pickcls){const[k,c]=d.pickcls.split("|");setCls(k,c);openYear[k]=null;flash=""}
+ else if(d.ncat)newsCat=d.ncat;
+ else if(d.paper)paperNo=+d.paper;
+ else if(d.ask)pending=d.ask;
+ else if(d.del){doDelete(d.del);pending=null}
+ else if(d.cancel){forgotOpen=false}
+ else if(d.vote){const x=S.ideas.find(i=>i.id==d.vote),n=stu().n;if(x&&role()==="student")x.votes=x.votes.includes(n)?x.votes.filter(v=>v!==n):[...x.votes,n];save()}
+ else if(d.isort)ideaSort=d.isort;
+ else if(d.showcode&&canSeeCodes()){const id=+d.showcode;shownCodes.has(id)?shownCodes.delete(id):shownCodes.add(id)}
+ else if(d.orig){const id=+d.orig;showOrig.has(id)?showOrig.delete(id):showOrig.add(id)}
+ else if(d.trans){translateIdea(+d.trans);return}
+ else if(d.copylog){const ta=document.getElementById("logtxt"),txt=ta?ta.value:"";try{navigator.clipboard.writeText(txt).then(()=>{flash=T[lang].copied;render()},()=>{if(ta){ta.focus();ta.select()}})}catch(err){if(ta){ta.focus();ta.select()}}return}
+ else if(d.clearlog){S.errors=[];save()}
+ else if(d.repairall){repairAll()}
+ else if(d.ptab){ptab=d.ptab;if(typeof window!=="undefined"&&window.scrollTo)window.scrollTo(0,0)}
+ else if(d.gopublic){viewPublic=true;ptab="main"}
+ else if(d.leavepublic){viewPublic=false;tab=null}
+ else if(d.adminlogin){viewPublic=false;loginOpen=true;pinMsg=""}
+ else if(d.logout){viewPublic=true;ptab="main";stuLogin=null;store.del("stuLogin");tab=null;pinMsg=""}
+ else if(d.newcode){const u=S.users.find(x=>x.id==d.newcode);if(u&&u.r==="student"&&canSeeCodes()){u.code=newCode();flash=`${T[lang].newCodeMade} ${u.n}`;if(stuLogin===u.id){stuLogin=null;store.del("stuLogin")}}save()}
+ else if(d.lock||d.lockall||d.tostudent){shownCodes.clear();viewPublic=!S.users.some(u=>u.id===stuLogin);ptab="main";adminMode=false;loginOpen=false;curId=studentId();store.set("cur",curId);tab=null;pinMsg="";forgotOpen=false}
+ else if(d.forgot)forgotOpen=true;
+ else if(d.reset){store.del("adminPin");S=SEED();save();adminMode=false;loginOpen=true;curId=studentId();forgotOpen=false;pinMsg=""}
+ else if(d.lunch){if(b.disabled)return;(S.lunch[TODAY]=S.lunch[TODAY]||{})[stu().n]=d.lunch;save()}
+ else if(d.claim){const x=S.lost.find(x=>x.id==d.claim);if(x&&!x.claimed){x.claimed=true;x.claimedBy=me().n+" · "+kasClass();x.claimedAt=TODAY}save()}
+ else if(d.handed){const x=S.lost.find(x=>x.id==d.handed);if(x)x.handed=true;save()}
+ else if(d.approve||d.reject){const x=S.subs.find(s=>s.id==(d.approve||d.reject));if(x&&myLvl()>=2)x.status=d.approve?"approved":"rejected";save()}
+ else if(d.cal){const[y,m]=calMonth.split("-").map(Number),dt=new Date(y,m-1+(+d.cal),1);calMonth=`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}`;calDay=calMonth+"-01"}
+ else if(d.calday)calDay=d.calday;
+ else if(d.endalert){const x=S.news.find(x=>x.id==d.endalert);if(x&&canEditNews(x))x.active=false;save()}
+ else if(!d.cancel)return;
+ render();
+}));
+document.addEventListener("change",safe("change",e=>{
+ const el=e.target,d=el.dataset;
+ if(el.id==="uRole"){newRole=el.value;if(!ROLES.filter(canGive).includes(newRole))newRole="student";render();return}
+ if(el.id==="role"){curId=+el.value;store.set("cur",curId);tab=null;pinMsg="";flash="";pending=null;forgotOpen=false}
+ else if(el.id==="viewCls")viewCls=el.value;
+ else if(el.id==="gCls"||el.id==="mCls"){giveCls=el.value;flash=""}
+ else if(el.id==="lunchCls")lunchCls=el.value;
+ else if(d.done){const id=+d.done,n=stu().n,l=S.done[n]||[];S.done[n]=el.checked?[...l,id]:l.filter(x=>x!==id);save()}
+ else if(d.istatus){const x=S.ideas.find(i=>i.id==d.istatus);if(x&&myLvl()>=2)x.status=el.value;save()}
+ else if(d.user){const u=S.users.find(x=>x.id===+d.user);if(u){if((u.r==="admin"&&S.users.filter(x=>x.r==="admin").length===1)||(u.r==="student"&&el.value!=="student"&&S.users.filter(x=>x.r==="student").length===1)||!canManage(u)||!canGive(el.value)||u.id===curId){el.value=u.r;flash=T[lang].notAllowed}else{u.r=el.value;if(u.r==="student"&&!u.code)u.code=newCode()}save()}}
+ else return;render();
+}));
+document.addEventListener("input",safe("input",e=>{if(e.target.id==="uName")draftName=e.target.value;if(e.target.id==="uC")draftC=e.target.value;const k=e.target.dataset&&e.target.dataset.search;if(!k)return;q[k]=e.target.value;const t=T[lang],box=document.getElementById("res-"+k);
+ if(box)box.innerHTML=k==="news"?newsBlock(t,true,false):lostList(t,role()!=="student")}));
+document.addEventListener("submit",safe("submit",e=>{
+ e.preventDefault();const t=T[lang],f=e.target.id,v=id=>(document.getElementById(id)||{value:""}).value.trim();flash="";pinMsg="";
+ if(f==="f-stu"){if(Date.now()<blockUntil){render();return}const c=v("stuCode"),u=S.users.find(x=>x.r==="student"&&x.code===c);
+  if(u){stuLogin=u.id;store.set("stuLogin",u.id);curId=u.id;tries=0;pinMsg="";tab=null;viewPublic=false}else{tries++;pinMsg=t.wrongCode;if(tries>=5){blockUntil=Date.now()+30000;tries=0;setTimeout(()=>render(),30500)}}
+  render();return}
+ if(f==="f-pin"){const saved=store.get("adminPin",null),a=v("pin1");
+  const ok=()=>{adminMode=true;loginOpen=false;viewPublic=false;curId=adminId();tab=null};
+  if(saved){if(pinHash(a)===saved)ok();else pinMsg=t.wrongPin}
+  else if(!/^[0-9]{4,6}$/.test(a))pinMsg=t.setPin;
+  else if(a!==v("pin2"))pinMsg=t.pinMismatch;
+  else{store.set("adminPin",pinHash(a));ok()}
+  render();return}
+ if(f==="f-chpin"&&role()!=="admin"){render();return}
+ if(f==="f-chpin"){const a=v("cp1");if(pinHash(v("cp0"))!==store.get("adminPin",null))pinMsg=t.wrongPin;else if(!/^[0-9]{4,6}$/.test(a))pinMsg=t.setPin;else if(a!==v("cp2"))pinMsg=t.pinMismatch;else{store.set("adminPin",pinHash(a));flash=t.pinChanged}}
+ if(f==="f-own"&&v("hwDue")&&v("hwDue")<TODAY){pinMsg=t.pastDate;render();return}
+ if(f==="f-own")S.hw.push({id:Date.now(),type:"hw",task:v("hwTask"),subject:v("hwSubject"),due:v("hwDue"),cls:"me",owner:stu().n,by:""});
+ if(f==="f-assign"&&v("aDue")<TODAY){pinMsg=t.pastDate;render();return}
+ if(f==="f-assign"){S.hw.push({id:Date.now(),type:v("aType"),task:v("aTask"),subject:v("aSubj"),due:v("aDue"),cls:v("aCls"),by:me().n});flash=`${t.sent||t.send}: ${v("aCls")}`}
+ if(f==="f-give"&&!isStudentIn(v("gStudent"),v("gCls"))){pinMsg="";flash="";save();render();return}
+ if(f==="f-give"){S.points.push({id:Date.now(),student:v("gStudent"),kind:v("gKind"),reason:v("gReason"),date:TODAY,by:me().n});flash=`${t[v("gKind")]} · ${v("gStudent")}`}
+ if(f==="f-mark"&&!isStudentIn(v("mStudent"),v("mCls"))){save();render();return}
+ if(f==="f-mark"){const st=v("mStudent"),s=v("mSubject"),prev=(S.marks[st]||{})[s];(S.marks[st]=S.marks[st]||{})[s]={g:+v("mGrade"),t:prev?prev.t:6,e:v("mEffort"),c:v("mComment")};S.markLog.push({student:st,subj:s,g:+v("mGrade"),by:me().n,date:TODAY});flash=`${t.saved}: ${st} · ${t.subj[s]} · ${v("mGrade")}`}
+ if(f==="f-event"&&v("eDate")<TODAY){pinMsg=t.pastDate;render();return}
+ if(f==="f-event")S.events.push({id:Date.now(),date:v("eDate"),en:v("eTitle"),es:v("eTitle")});
+ if(f==="f-alert"&&myLvl()>=2&&ALERTS.includes(v("alCat"))){S.news.push({id:Date.now(),date:TODAY,cat:v("alCat"),active:true,title:v("alTitle"),text:v("alText"),by:me().n});newsCat="all"}
+ if(f==="f-news")S.news.push({id:Date.now(),date:TODAY,cat:v("nCat"),active:ALERTS.includes(v("nCat")),title:v("nTitle"),text:v("nText"),by:me().n});
+ if(f==="f-paper"){const raw=[1,2,3].map(i=>({h:v("pH"+i),b:v("pB"+i),a:v("pA"+i)}));const bad=raw.findIndex(a=>(a.h||a.b||a.a)&&!(a.h&&a.b));
+  if(bad>=0){pinMsg=t.articleIncomplete.replace("{n}",bad+1);render();return}
+  const ap=S.subs.filter(s=>s.status==="approved"),arts=raw.filter(a=>a.h&&a.b).map(a=>({...a,a:a.a||me().n})).concat(ap.map(s=>({h:s.h,b:s.b,a:s.a})));
+  if(!arts.length){pinMsg=t.noArticles;render();return}
+  const no=Math.max(0,...S.papers.map(p=>p.no))+1;S.papers.push({no,date:TODAY,articles:arts});ap.forEach(s=>s.status="published");paperNo=no;flash=`${t.issue} ${no}`}
+ if(f==="f-lost")S.lost.push({id:Date.now(),item:v("lItem"),where:v("lWhere"),date:TODAY,claimed:false});
+ if(f==="f-sub"){S.subs.push({id:Date.now(),h:v("sH"),b:v("sB"),a:`${me().n}, ${kasClass().replace("Year ","Y")}`,by:stu().n,date:TODAY,status:"pending"});flash=t.subSent}
+ if(f==="f-idea"){const el=document.getElementById("ideaAnon"),txt=v("ideaText").slice(0,500);if(txt){const id=Date.now();S.ideas.push({id,text:txt,lang,by:stu().n,anon:!!(el&&el.checked),date:TODAY,votes:[],status:"new"});flash=t.ideaSent;ideaSort="new";save();setTimeout(()=>translateIdea(id),0)}}
+ if(f==="f-abs"&&v("absDate")<TODAY){pinMsg=t.pastDate;render();return}
+ if(f==="f-abs"){S.absences.push({id:Date.now(),student:stu().n,date:v("absDate"),reason:v("absReason"),time:v("absTime"),note:v("absNote"),by:me().n});flash=t.reported}
+ if(f==="f-user"&&!canGive(v("uRole"))){flash="";pinMsg=t.notAllowed;render();return}
+ if(f==="f-user"){const nm=v("uName").toLowerCase(),r0=v("uRole"),grp=x=>x==="student"?"s":"o";if(S.users.some(u=>u.n.toLowerCase()===nm&&grp(u.r)===grp(r0))){pinMsg=t.nameTaken;render();return}}
+ if(f==="f-user"){const r=v("uRole");let c=r==="student"?v("uCls"):v("uC");draftName="";draftC="";if(r==="student"&&!CLASSES.includes(c))c="Year 7A";S.users.push({id:Date.now(),n:v("uName"),r,c:c||t.roles[r],code:r==="student"?newCode():undefined});flash=v("uName")}
+ save();render();
+}));
+render();
+</script>
+
+</body></html>
