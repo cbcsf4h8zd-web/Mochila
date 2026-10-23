@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-PBJ5UTgp7EYFQpPseGonnmw/pCdYmMN+M1gh8tmkTqQ=' 'sha256-LdlZmv89HEkVR22EHv72OM/VF7sFnPplQuIJLH09DYM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; connect-src https://tkorpuzmxftlplzeztbl.supabase.co; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-iBk/eKBjRjG8XpSQw/uznWkoBBrNx9hI1rfdznfhVqA=' 'sha256-LdlZmv89HEkVR22EHv72OM/VF7sFnPplQuIJLH09DYM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; connect-src 'self' https://tkorpuzmxftlplzeztbl.supabase.co; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b2a4a">
@@ -594,6 +594,8 @@ function lockView(t){const wait=lockLeft("staff");
 
 let notice="";
 const CHANGELOG=[
+ {v:"37",date:"2026-10-23",en:["The app on your home screen now updates itself: open it and you get the newest version, no need to add it again"],
+  es:["La app de tu pantalla de inicio se actualiza sola: ábrela y tienes la versión más nueva, sin volver a añadirla"]},
  {v:"36",date:"2026-10-23",en:["Mochila now runs on a real school server: homework, news, merits, lunch and ideas are the same on every phone","Your student code works on any phone, and you stay logged in","Teachers see live lunch numbers and homework progress from the whole class","The lock after wrong codes is now checked by the server, per device","News and alerts refresh by themselves every minute","Nothing about pupils is stored on the phone any more"],
   es:["Mochila funciona ahora con un servidor real del colegio: deberes, noticias, méritos, comedor e ideas son iguales en todos los móviles","Tu código de alumno funciona en cualquier móvil y la sesión se queda abierta","El profesorado ve en directo el comedor y el progreso de los deberes de toda la clase","El bloqueo tras códigos incorrectos lo comprueba ahora el servidor, por dispositivo","Las noticias y alertas se actualizan solas cada minuto","Ya no se guarda nada de los alumnos en el móvil"]},
  {v:"35",date:"2026-10-23",en:["Extra protection: the app blocks strange scripts and cannot send your data to other websites","HomeworkHelpie: a homework helper that explains and gives hints (Homework → HomeworkHelpie)","Staff log in with their own staff code","After 3 wrong codes you have to wait, and the wait gets longer each time","Test planner: choose the days you want to study for a test","Reminder for homework that is due tomorrow","School map, sports results and events for your own Year","Share and like council ideas straight from your Today screen","This What's new screen"],
@@ -610,7 +612,7 @@ function updCard(t){if(!showUpdCard)return "";const c=CHANGELOG[0];return `<div 
 function whatsNewView(t){return `<section class="sec"><h2>✨ ${t.newTitle}</h2>${CHANGELOG.map((c,i)=>`<div class="card${i===0?" upd":""}"><div class="cardhead"><b>${fmt(c.date,{day:"numeric",month:"long",year:"numeric"})}</b><span class="note">${t.version} ${c.v}</span></div><ul>${c[lang].map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}<button class="btn ghost" data-closenew="1" style="justify-self:start">← ${t.newBack}</button></section>`}
 const newLink=t=>`<button class="linkbtn small" data-whatsnew="1">✨ ${t.newLink} · ${t.version} ${APP_VERSION}</button>`;
 let viewPublic=true,ptab="main";
-const APP_VERSION="36";{const old=store.get("appver",null);store.set("appver",APP_VERSION);if(old&&old!==APP_VERSION)showUpdCard=true}const shownCodes=new Set();
+const APP_VERSION="37";{const old=store.get("appver",null);store.set("appver",APP_VERSION);if(old&&old!==APP_VERSION)showUpdCard=true}const shownCodes=new Set();
 const safe=(name,fn)=>e=>{try{fn(e)}catch(err){logErr(err,"action: "+name);try{render()}catch(x){}}};
 if(typeof window!=="undefined"&&window.addEventListener){window.addEventListener("error",e=>logErr(e.error||e.message,"page"));window.addEventListener("unhandledrejection",e=>logErr(e.reason,"page"))}
 function logErr(e,where){try{if(CLOUD_ON)rpc("log_error",{p_place:String(where).slice(0,80),p_message:String((e&&(e.message||e.code))||e).slice(0,300)}).catch(()=>{});S.errors=(S.errors||[]).concat({d:new Date().toISOString(),w:where,m:String((e&&(e.message||e.code))||e).slice(0,240)}).slice(-30);save()}catch(x){}}
@@ -903,6 +905,12 @@ async function cloudBoot(){const m=document.getElementById("main"),c=CMSG[lang]|
  catch(e){window.removeEventListener("click",cloudClick,true);window.removeEventListener("change",cloudChange,true);window.removeEventListener("submit",cloudSubmit,true);
   CLOUD_ON=false;adminMode=false;const o=store.get("mochila-demo",null);S=o&&o.v===6&&!o.cloud?o:SEED();repairData();curId=studentId();stuLogin=null;notice=c.offline;render();return}
  render();setInterval(refresh,45e3);document.addEventListener("visibilitychange",()=>{if(!document.hidden)refresh()})}
+/* ---------- Auto-update for the home-screen app ---------- */
+let updChecking=false;
+function checkUpdate(){if(updChecking||typeof location==="undefined"||!/^https?:$/.test(location.protocol)||typeof fetch!=="function")return;updChecking=true;
+ fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{updChecking=false;if(!j||!j.v||String(j.v)===APP_VERSION)return;
+  const k="mochila-upd-"+j.v;if(ss.get(k))return;if(typing()){setTimeout(checkUpdate,30e3);return}ss.set(k,"1");location.replace(location.pathname+"?v="+encodeURIComponent(j.v))}).catch(()=>{updChecking=false})}
+if(typeof document!=="undefined"){document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkUpdate()});if(typeof window!=="undefined")window.addEventListener("pageshow",checkUpdate);setInterval(checkUpdate,10*60e3);setTimeout(checkUpdate,3000)}
 if(CLOUD_ON)cloudBoot();else render();
 </script>
 
