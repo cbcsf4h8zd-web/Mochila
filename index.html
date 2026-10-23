@@ -1,4 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-hWdQFHlG/6lwf3PmpfbeC0nWcKjr0QMPD7DUWNzJCyw=' 'sha256-LdlZmv89HEkVR22EHv72OM/VF7sFnPplQuIJLH09DYM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'">
+<meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b2a4a">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -8,6 +10,7 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
+<script>if(window.top!==window.self){try{window.top.location=window.self.location}catch(e){document.documentElement.innerHTML='';}}</script>
 <style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head><body>
 <title>Mochila</title>
@@ -590,8 +593,8 @@ function lockView(t){const wait=lockLeft("staff");
 
 let notice="";
 const CHANGELOG=[
- {v:"34",date:"2026-10-23",en:["HomeworkHelpie: a homework helper that explains and gives hints (Homework → HomeworkHelpie)","Staff log in with their own staff code","After 3 wrong codes you have to wait, and the wait gets longer each time","Test planner: choose the days you want to study for a test","Reminder for homework that is due tomorrow","School map, sports results and events for your own Year","Share and like council ideas straight from your Today screen","This What's new screen"],
-  es:["HomeworkHelpie: una ayuda con los deberes que explica y da pistas (Deberes → HomeworkHelpie)","El personal entra con su propio código","Tras 3 códigos incorrectos tienes que esperar, y cada vez la espera es más larga","Plan de exámenes: elige los días en que quieres estudiar","Recordatorio de los deberes para mañana","Plano del colegio, resultados deportivos y eventos de tu Year","Comparte y apoya ideas del consejo desde tu pantalla de Hoy","Esta pantalla de Novedades"]},
+ {v:"35",date:"2026-10-23",en:["Extra protection: the app blocks strange scripts and cannot send your data to other websites","HomeworkHelpie: a homework helper that explains and gives hints (Homework → HomeworkHelpie)","Staff log in with their own staff code","After 3 wrong codes you have to wait, and the wait gets longer each time","Test planner: choose the days you want to study for a test","Reminder for homework that is due tomorrow","School map, sports results and events for your own Year","Share and like council ideas straight from your Today screen","This What's new screen"],
+  es:["Más protección: la app bloquea scripts extraños y no puede enviar tus datos a otras webs","HomeworkHelpie: una ayuda con los deberes que explica y da pistas (Deberes → HomeworkHelpie)","El personal entra con su propio código","Tras 3 códigos incorrectos tienes que esperar, y cada vez la espera es más larga","Plan de exámenes: elige los días en que quieres estudiar","Recordatorio de los deberes para mañana","Plano del colegio, resultados deportivos y eventos de tu Year","Comparte y apoya ideas del consejo desde tu pantalla de Hoy","Esta pantalla de Novedades"]},
  {v:"27",date:"2026-10-22",en:["New app icon: the school backpack with a B","Mochila can be put on your home screen","Main page for everyone, without personal information","Staff see what percentage of students has lunch each day","Student codes are hidden until a teacher taps Show"],
   es:["Nuevo icono: la mochila del colegio con una B","Mochila se puede poner en la pantalla de inicio","Página de inicio para todos, sin información personal","El personal ve qué porcentaje de alumnos come cada día","Los códigos de alumno están ocultos hasta que un profesor toca Ver"]},
  {v:"21",date:"2026-10-21",en:["Every student logs in with their own 6-digit code","Idea box for the student council, translated automatically","Calendar with tests, homework and events","Merit badges: Bronze, Silver, Gold and Platinum","Write articles for The BSV Times","Search in news and lost property","The app repairs itself when something goes wrong"],
@@ -604,7 +607,7 @@ function updCard(t){if(!showUpdCard)return "";const c=CHANGELOG[0];return `<div 
 function whatsNewView(t){return `<section class="sec"><h2>✨ ${t.newTitle}</h2>${CHANGELOG.map((c,i)=>`<div class="card${i===0?" upd":""}"><div class="cardhead"><b>${fmt(c.date,{day:"numeric",month:"long",year:"numeric"})}</b><span class="note">${t.version} ${c.v}</span></div><ul>${c[lang].map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}<button class="btn ghost" data-closenew="1" style="justify-self:start">← ${t.newBack}</button></section>`}
 const newLink=t=>`<button class="linkbtn small" data-whatsnew="1">✨ ${t.newLink} · ${t.version} ${APP_VERSION}</button>`;
 let viewPublic=true,ptab="main";
-const APP_VERSION="34";{const old=store.get("appver",null);store.set("appver",APP_VERSION);if(old&&old!==APP_VERSION)showUpdCard=true}const shownCodes=new Set();
+const APP_VERSION="35";{const old=store.get("appver",null);store.set("appver",APP_VERSION);if(old&&old!==APP_VERSION)showUpdCard=true}const shownCodes=new Set();
 const safe=(name,fn)=>e=>{try{fn(e)}catch(err){logErr(err,"action: "+name);try{render()}catch(x){}}};
 if(typeof window!=="undefined"&&window.addEventListener){window.addEventListener("error",e=>logErr(e.error||e.message,"page"));window.addEventListener("unhandledrejection",e=>logErr(e.reason,"page"))}
 function logErr(e,where){try{S.errors=(S.errors||[]).concat({d:new Date().toISOString(),w:where,m:String((e&&(e.message||e.code))||e).slice(0,240)}).slice(-30);save()}catch(x){}}
