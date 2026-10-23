@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-hWdQFHlG/6lwf3PmpfbeC0nWcKjr0QMPD7DUWNzJCyw=' 'sha256-LdlZmv89HEkVR22EHv72OM/VF7sFnPplQuIJLH09DYM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-PBJ5UTgp7EYFQpPseGonnmw/pCdYmMN+M1gh8tmkTqQ=' 'sha256-LdlZmv89HEkVR22EHv72OM/VF7sFnPplQuIJLH09DYM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; connect-src https://tkorpuzmxftlplzeztbl.supabase.co; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b2a4a">
@@ -231,7 +231,7 @@ const T={
   merit:"Merit",demerit:"Demerit",merits:"Merits",demerits:"Demerits",noPts:"No merits or demerits yet.",onlyStudents:"Only students can get merits and demerits.",
   cat:{general:"General",holiday:"Holiday",dayoff:"Day off",cancel:"Lesson cancelled",public:"Public holiday",dana:"DANA alert",esalert:"ES-Alert"},addAlert:"Post an alert",alertNote:"Staff can post DANA and ES-Alert warnings. They show at the top for everyone and end after 2 days, or when you end them.",alertType:"Type of alert",allNews:"All",endAlert:"End alert",ended:"Ended",
   hwNote:"Work set by a teacher appears for every student in that class.",
-  demoNote:"Demo with invented names and example data. Everything stays on this phone.",
+  demoNote:"Demo with invented names and example data. Everything stays on this phone.",cloudNote:"Test version with invented names. Data is kept on the school server, not on this phone.",
   lockNote:"In the real version only BSV students, parents and staff sign in, with their school account.",
   st:{students:"Students (school)",classes:"Classes",merits:"Merits given",demerits:"Demerits given",lunchYes:"Lunch today",absent:"Absent today"},role:"Role",
   current:"Average",target:"Target",effort:"Effort",outOf:"Grades 1–9",onTarget:"subjects on or above target",noGrades:"No grades yet.",
@@ -258,7 +258,7 @@ const T={
   merit:"Mérito",demerit:"Demérito",merits:"Méritos",demerits:"Deméritos",noPts:"Aún no hay méritos ni deméritos.",onlyStudents:"Solo los alumnos pueden recibir méritos y deméritos.",
   cat:{general:"General",holiday:"Vacaciones",dayoff:"Día libre",cancel:"Clase cancelada",public:"Festivo",dana:"Alerta DANA",esalert:"ES-Alert"},addAlert:"Publicar alerta",alertNote:"El personal puede publicar avisos DANA y ES-Alert. Salen arriba para todos y terminan a los 2 días, o cuando los terminas tú.",alertType:"Tipo de alerta",allNews:"Todo",endAlert:"Terminar alerta",ended:"Terminada",
   hwNote:"Las tareas del profesorado aparecen para todos los alumnos de esa clase.",
-  demoNote:"Demo con nombres inventados y datos de ejemplo. Todo se queda en este móvil.",
+  demoNote:"Demo con nombres inventados y datos de ejemplo. Todo se queda en este móvil.",cloudNote:"Versión de prueba con nombres inventados. Los datos se guardan en el servidor del colegio, no en este móvil.",
   lockNote:"En la versión real solo alumnos, familias y personal del BSV entran, con su cuenta del colegio.",
   st:{students:"Alumnos (colegio)",classes:"Clases",merits:"Méritos dados",demerits:"Deméritos dados",lunchYes:"Comen hoy",absent:"Ausentes hoy"},role:"Rol",
   current:"Media",target:"Objetivo",effort:"Esfuerzo",outOf:"Notas 1–9",onTarget:"asignaturas en su objetivo o por encima",noGrades:"Aún no hay notas.",
@@ -305,6 +305,7 @@ const houseOf=n=>n===KAS?"turia":HOUSES[[...String(n)].reduce((a,c)=>a+c.charCod
 const MENU={en:["Lentil soup","Chicken with rice","Veggie pasta","Fruit or yoghurt"],es:["Sopa de lentejas","Pollo con arroz","Pasta vegetal","Fruta o yogur"]};
 const CLUBS=[{d:0,en:"Chess club",es:"Club de ajedrez",r:"Room 12"},{d:1,en:"Coding club",es:"Club de programación",r:"ICT 2"},{d:2,en:"Football",es:"Fútbol",r:"Pitch"},{d:3,en:"Choir",es:"Coro",r:"Music room"},{d:4,en:"Debate club",es:"Club de debate",r:"Library"}];
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+const CLOUD={url:"https://tkorpuzmxftlplzeztbl.supabase.co",key:"sb_publishable_owO1bzkFxYcrUCgCNGscGw_Bl6dw3a1"};let CLOUD_ON=typeof fetch==="function"&&!!CLOUD.url;
 const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const TODAY=iso(new Date());
 const addDays=(s,n)=>{const d=new Date(s+"T12:00");d.setDate(d.getDate()+n);return iso(d)};
@@ -330,11 +331,11 @@ const SEED=()=>({v:6,plan:{},sports:[{id:1,date:addDays(TODAY,-6),team:"Year 8 f
  lost:[{id:1,item:"Blue water bottle",item_es:"Botella de agua azul",where:"Sports hall",where_es:"Polideportivo",date:addDays(TODAY,-3),claimed:false},{id:2,item:"Black hoodie, size M",item_es:"Sudadera negra, talla M",where:"Library",where_es:"Biblioteca",date:addDays(TODAY,-2),claimed:false},{id:3,item:"Calculator (Casio)",item_es:"Calculadora (Casio)",where:"Room 12",where_es:"Aula 12",date:TODAY,claimed:false}],
  absences:[],
  users:[{id:1,n:KAS,r:"admin",c:"Admin"},{id:2,n:KAS,r:"student",c:"Year 7B"},{id:3,n:"Parent of Kas",r:"parent",c:KAS},{id:4,n:"Mr Carter",r:"staff",c:"Maths"},{id:5,n:"Ms Lane",r:"staff",c:"English"},{id:6,n:"Ana R.",r:"office",c:"Office"},{id:7,n:"Dr Hughes",r:"head",c:"Head"}]});
-let S=store.get("mochila-demo",null); if(!S||S.v!==6)S=SEED();S.subs=S.subs||[];S.errors=S.errors||[];S.ideas=(S.ideas||[]).map((x,i)=>typeof x==="string"?{id:Date.now()+i,text:x,lang:"en",by:KAS,anon:true,date:TODAY,votes:[],status:"new"}:x);if(S.doneIds){S.done={[KAS]:S.doneIds};delete S.doneIds}S.done=S.done||{};S.hw.forEach(x=>{if(x.cls==="me"&&!x.owner)x.owner=KAS});S.plan=S.plan||{};S.sports=S.sports||[];if(!S.fix7b){S.users.forEach(u=>{if(u.n===KAS&&u.r==="student"&&u.c==="Year 7A")u.c="Year 7B"});S.hw.forEach(x=>{if(x.id<=5&&x.cls==="Year 7A")x.cls="Year 7B"});S.fix7b=1} delete S.codes;
+let S=CLOUD_ON?blankS():store.get("mochila-demo",null); if(!CLOUD_ON&&(!S||S.v!==6))S=SEED();S.subs=S.subs||[];S.errors=S.errors||[];S.ideas=(S.ideas||[]).map((x,i)=>typeof x==="string"?{id:Date.now()+i,text:x,lang:"en",by:KAS,anon:true,date:TODAY,votes:[],status:"new"}:x);if(S.doneIds){S.done={[KAS]:S.doneIds};delete S.doneIds}S.done=S.done||{};S.hw.forEach(x=>{if(x.cls==="me"&&!x.owner)x.owner=KAS});S.plan=S.plan||{};S.sports=S.sports||[];if(!S.fix7b){S.users.forEach(u=>{if(u.n===KAS&&u.r==="student"&&u.c==="Year 7A")u.c="Year 7B"});S.hw.forEach(x=>{if(x.id<=5&&x.cls==="Year 7A")x.cls="Year 7B"});S.fix7b=1} delete S.codes;
 let lang=store.get("lang","en"),curId=store.get("cur",2),adminMode=false,superAdmin=false,pickTeacher=false,loginOpen=false,stuLogin=store.get("stuLogin",null),tries=0,blockUntil=0,tab=null,hub="news",newsCat="all",paperNo=null,viewCls="Year 7A",giveCls="Year 7A",lunchCls="Year 7A",assignCls="Year 7A",stCls=null,newCls="Year 7A",codeCls="Year 7A",newRole="student",draftName="",draftC="",openYear={},
     adminOK=false,pinMsg="",flash="",pending=null,forgotOpen=false;
 const wd=new Date().getDay(),isWeekday=wd>=1&&wd<=5,todayIdx=isWeekday?wd-1:0;let day=todayIdx;
-const save=()=>store.set("mochila-demo",S);
+const save=()=>CLOUD_ON?store.set("mochila-plan",S.plan||{}):store.set("mochila-demo",S);
 const me=()=>S.users.find(u=>u.id===curId)||S.users[0];
 const LEVEL={admin:4,head:3,staff:2,office:2,parent:1,student:1};
 const myLvl=()=>LEVEL[role()];
@@ -364,7 +365,7 @@ const stu=()=>{const m=me();if(m&&m.r==="student")return m;if(m&&m.r==="parent")
 const kasClass=()=>stu().c;
 function rnd6(){let x;try{x=crypto.getRandomValues(new Uint32Array(1))[0]}catch(e){x=Math.floor(Math.random()*4294967295)}return String(100000+x%900000)}
 function newCode(){let c;do{c=rnd6()}while(S.users.some(u=>u.code===c));return c}
-function ensureCodes(){S.users.forEach(u=>{if(u.r==="student"&&!u.code)u.code=newCode()})}
+function ensureCodes(){if(CLOUD_ON)return;S.users.forEach(u=>{if(u.r==="student"&&!u.code)u.code=newCode()})}
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fmt=(d,o)=>new Date(d+"T12:00").toLocaleDateString(lang==="es"?"es-ES":"en-GB",o);
 const short=d=>fmt(d,{weekday:"short",day:"numeric",month:"short"});
@@ -404,10 +405,10 @@ const BADGE_AT=[5,10,25,50];
 const isDone=(h,n)=>(S.done[n||stu().n]||[]).includes(h.id);
 const isLate=h=>h.due&&h.due<TODAY&&!isDone(h);
 function workRows(t,list,student){
- return list.map(h=>{const d=isDone(h);return `<div class="row${d?" done":""}">${student&&role()==="student"?`<input type="checkbox" class="check" id="hw-${h.id}" data-done="${h.id}" ${d?"checked":""} aria-label="${esc(h.task)}">`:""}<div class="what"><b>${esc(tr(h,"task"))}</b><span>${esc(t.subj[h.subject]||h.subject)}${h.due?` · ${h.type==="test"?t.on:t.due} ${short(h.due)}`:""} · ${student?(h.by?esc(h.by):t.mine):esc(h.cls)}</span></div>${!student&&h.type!=="test"?(()=>{const r=roster(h.cls),dn=r.filter(n=>isDone(h,n));return `<span class="chip ${dn.length?"c-holiday":""}" title="${esc(dn.join(", "))}">${dn.length}/${r.length} ${t.doneWord}${dn.length?" · "+esc(dn.join(", ").split(" ")[0]):""}</span>`})():""}${isLate(h)&&student?`<span class="chip red">${t.late}</span>`:h.type==="test"?`<span class="chip c-test">${t.test}</span>`:""}${h.cls==="me"?delBtn("hw:"+h.id,t):""}</div>`}).join("")}
+ return list.map(h=>{const d=isDone(h);return `<div class="row${d?" done":""}">${student&&role()==="student"?`<input type="checkbox" class="check" id="hw-${h.id}" data-done="${h.id}" ${d?"checked":""} aria-label="${esc(h.task)}">`:""}<div class="what"><b>${esc(tr(h,"task"))}</b><span>${esc(t.subj[h.subject]||h.subject)}${h.due?` · ${h.type==="test"?t.on:t.due} ${short(h.due)}`:""} · ${student?(h.cls==="me"||!h.by&&h.owner?t.mine:esc(h.by||h.cls)):esc(h.cls)}</span></div>${!student&&h.type!=="test"?(()=>{const r=roster(h.cls),dn=r.filter(n=>isDone(h,n));return `<span class="chip ${dn.length?"c-holiday":""}" title="${esc(dn.join(", "))}">${dn.length}/${r.length} ${t.doneWord}${dn.length?" · "+esc(dn.join(", ").split(" ")[0]):""}</span>`})():""}${isLate(h)&&student?`<span class="chip red">${t.late}</span>`:h.type==="test"?`<span class="chip c-test">${t.test}</span>`:""}${h.cls==="me"?delBtn("hw:"+h.id,t):""}</div>`}).join("")}
 const myWork=()=>S.hw.filter(h=>h.cls===kasClass()||(h.cls==="me"&&h.owner===stu().n));
 const ptRows=(t,list,showName)=>list.map(x=>`<div class="row"><div class="pt ${x.kind}">${x.kind==="merit"?"+1":"−1"}</div><div class="what"><b>${esc(showName?x.student:tr(x,"reason"))}</b><span>${showName?esc(tr(x,"reason"))+" · ":""}${t[x.kind]} · ${fmt(x.date,{day:"numeric",month:"short"})} · ${esc(x.by)}</span></div></div>`).join("");
-function houseTable(t){const sc=HOUSES.map(h=>({...h,p:h.base+S.points.filter(x=>x.kind==="merit"&&houseOf(x.student)===h.id).length})).sort((a,b)=>b.p-a.p),max=sc[0].p;
+function houseTable(t){const sc=HOUSES.map(h=>({...h,p:h.base+(CLOUD_ON?(+(S.houseMerits||{})[h.id]||0):S.points.filter(x=>x.kind==="merit"&&houseOf(x.student)===h.id).length)})).sort((a,b)=>b.p-a.p),max=sc[0].p;
  return `<div class="list">${sc.map((h,i)=>`<div class="row"><div class="time">${i+1}</div><div class="what"><b>${h.n}</b><div class="bar"><i style="width:${h.p/max*100}%;background:${h.col};opacity:1"></i></div></div><div class="grade" style="font-size:1.1rem">${h.p}</div></div>`).join("")}</div>`}
 function subForm(t){const mine=S.subs.filter(s=>s.by===stu().n).reverse();
  return `<div class="card"><b>${t.submitTitle}</b><form id="f-sub"><input id="sH" class="full" required placeholder="${t.phHeadline}" aria-label="${t.phHeadline}"><textarea id="sB" class="full" rows="4" required placeholder="${t.phArticle}" aria-label="${t.phArticle}"></textarea><button>${t.submitBtn}</button></form><p class="note">${t.subNote}</p>${flashNote()}</div>
@@ -415,7 +416,7 @@ function subForm(t){const mine=S.subs.filter(s=>s.by===stu().n).reverse();
 function paperView(t,pub){const ps=[...S.papers].sort((a,b)=>b.no-a.no);if(!ps.length)return empty();const p=ps.find(x=>x.no===paperNo)||ps[0];
  return `<div class="pills">${ps.map(x=>`<button id="paper-${x.no}" data-paper="${x.no}" aria-pressed="${x===p}">${t.issue} ${x.no}</button>`).join("")}</div>
  <div class="paper"><div class="mast">The BSV Times<small>${t.issue} ${p.no} · ${fmt(p.date,{day:"numeric",month:"long",year:"numeric"})}${p.date===TODAY?` · ${t.newIssue}`:""}</small></div>${p.articles.map(a=>`<article><h4>${esc(tr(a,"h"))}</h4><p>${esc(tr(a,"b"))}</p><span>${pub?t.reporter:esc(a.a)}</span></article>`).join("")}<p class="note" style="text-align:center">${t.editors}</p></div>`}
-const roster=c=>{const real=S.users.filter(u=>u.r==="student"&&u.c===c).map(u=>u.n),gen=genNames(c).filter(n=>!real.includes(n));return [...real,...gen].slice(0,Math.max(real.length,CLASS_SIZE[CLASSES.indexOf(c)]||25))};
+const roster=c=>{const real=S.users.filter(u=>u.r==="student"&&u.c===c).map(u=>u.n),gen=CLOUD_ON?[]:genNames(c).filter(n=>!real.includes(n));return [...real,...gen].slice(0,Math.max(real.length,CLASS_SIZE[CLASSES.indexOf(c)]||25))};
 const isStudentIn=(n,c)=>roster(c).includes(n);
 const lunchOf=(n,d)=>(S.lunch[d||TODAY]||{})[n];
 const SCHOOL_SIZE=()=>CLASSES.reduce((s,c)=>s+roster(c).length,0);
@@ -449,7 +450,7 @@ const busyTr=new Set(),failTr=new Set(),showOrig=new Set();let ideaSort="top";
 async function translateIdea(id){const x=S.ideas.find(i=>i.id===id);if(!x||busyTr.has(id))return;busyTr.add(id);failTr.delete(id);render();
  try{const s=await getSample();if(!s)throw{code:"not_granted"};
   const r=await s.json('Translate this idea a student wrote for the school council. Reply with only a JSON object {"en": string, "es": string}: the idea in natural English and in natural Spanish (Spain). Keep the meaning and tone, add nothing, no quotes around it.\n\nIdea:\n'+x.text.slice(0,1500),{modelTier:"quick"});
-  if(r&&typeof r.en==="string"&&typeof r.es==="string"&&r.en.trim()&&r.es.trim()){x.tr={en:r.en.trim().slice(0,2000),es:r.es.trim().slice(0,2000)};save()}else throw{code:"invalid_json"}}
+  if(r&&typeof r.en==="string"&&typeof r.es==="string"&&r.en.trim()&&r.es.trim()){x.tr={en:r.en.trim().slice(0,2000),es:r.es.trim().slice(0,2000)};save();cloudTr(x)}else throw{code:"invalid_json"}}
  catch(e){failTr.add(id)}finally{busyTr.delete(id);render()}}
 const ideaText=x=>showOrig.has(x.id)||!x.tr?x.text:(x.tr[lang]||x.text);
 function ideaBox(t){const lvl=myLvl(),isStu=role()==="student",me_=stu().n;
@@ -548,7 +549,7 @@ const VIEWS={
  points:t=>{const p=S.points.filter(x=>x.student===stu().n).reverse(),m=p.filter(x=>x.kind==="merit").length;
   return `<h2>${t.tabs.points}</h2><div class="stats"><div class="stat good"><b>${m}</b><span>${t.merits}</span></div><div class="stat bad"><b>${p.length-m}</b><span>${t.demerits}</span></div></div>${badgeCard(t,m)}<div class="list">${ptRows(t,p,false)||empty(t.noPts)}</div><h3>${t.houses} · ${t.house}: ${HOUSES.find(x=>x.id===houseOf(stu().n)).n}</h3>${houseTable(t)}`},
  school:t=>`<h2>${t.tabs.school}</h2>${hubView(t)}`,
- codes:t=>{if(!canSeeCodes())return `<h2>${t.tabs.codes}</h2>${empty(t.notAllowed)}`;const list=S.users.filter(u=>u.r==="student"&&u.c===codeCls);return `<h2>${t.tabs.codes}</h2>${classPicker(t,"codeCls")}<div class="list">${list.map(u=>`<div class="row"><div class="what"><b>${esc(u.n)}</b><span>${shortCls(u.c)} · ${t.studentCode}: <code class="code">${shownCodes.has(u.id)?(u.code||"—"):"••••••"}</code></span></div><button class="btn ghost" data-showcode="${u.id}">${shownCodes.has(u.id)?t.hideCode:t.showCode}</button><button class="btn" data-newcode="${u.id}">${t.newCode}</button></div>`).join("")||empty(t.noCodeStudents)}</div><p class="note">${t.codesNote}</p>${flashNote()}`},
+ codes:t=>{if(!canSeeCodes())return `<h2>${t.tabs.codes}</h2>${empty(t.notAllowed)}`;const list=S.users.filter(u=>u.r==="student"&&u.c===codeCls);return `<h2>${t.tabs.codes}</h2>${classPicker(t,"codeCls")}<div class="list">${list.map(u=>`<div class="row"><div class="what"><b>${esc(u.n)}</b><span>${shortCls(u.c)} · ${t.studentCode}: <code class="code">${shownCodes.has(String(u.id))?(u.code||"—"):"••••••"}</code></span></div><button class="btn ghost" data-showcode="${u.id}">${shownCodes.has(String(u.id))?t.hideCode:t.showCode}</button><button class="btn" data-newcode="${u.id}">${t.newCode}</button></div>`).join("")||empty(t.noCodeStudents)}</div><p class="note">${t.codesNote}</p>${flashNote()}`},
  classes:t=>group(t,"classes"),day:t=>group(t,"day"),
  me:t=>group(t,"me"),pupils:t=>group(t,"pupils"),comms:t=>group(t,"comms"),
  absence:t=>{const l=S.absences.filter(a=>a.student===stu().n).sort((a,b)=>b.date.localeCompare(a.date));
@@ -575,9 +576,9 @@ const VIEWS={
   ${searchBox(t,"lost")}<div id="res-lost">${lostList(t,true)}</div>`,
  manage:t=>`<h2>${t.tabs.manage}</h2><form id="f-event"><input id="eTitle" class="full" required placeholder="${t.phTitle}" aria-label="${t.phTitle}"><input id="eDate" type="date" min="${TODAY}" required aria-label="${t.date}"><select id="eYear" aria-label="${t.forYear}"><option value="">${t.allYears}</option>${[7,8,9,10,11].map(y=>`<option value="${y}">Y${y} ${t.yearOnly}</option>`).join("")}</select><button>${t.addEvent}</button></form>${errNote()}<div class="list">${eventRows(t,true)}</div>`,
  overview:t=>{const m=S.points.filter(x=>x.kind==="merit").length,c=lunchCounts();return `${role()==="admin"?errorLog(t):""}${danaBanner(t)}<h2>${t.tabs.overview}</h2><div class="stats"><div class="stat"><b>${SCHOOL_SIZE()}</b><span>${t.st.students}</span></div><div class="stat"><b>${CLASSES.length}</b><span>${t.st.classes}</span></div><div class="stat good"><b>${m}</b><span>${t.st.merits}</span></div><div class="stat bad"><b>${S.points.length-m}</b><span>${t.st.demerits}</span></div><div class="stat"><b>${pct(c.yes,SCHOOL_SIZE())}%</b><span>${t.st.lunchYes} · ${c.yes}</span></div><div class="stat"><b>${S.absences.filter(a=>a.date===TODAY).length}</b><span>${t.st.absent}</span></div></div><h3>${t.perDay}</h3><div class="list">${schoolDays(5).map(d=>{const x=lunchDay(d),p=pct(x.yes,SCHOOL_SIZE());return `<div class="row"><div class="time">${t.wk[(new Date(d+"T12:00").getDay()+6)%7]}</div><div class="what"><b>${p}%</b><div class="bar"><i style="width:${Math.min(100,p)}%;background:var(--ok);opacity:1"></i></div></div></div>`}).join("")}</div><h3>${t.houses}</h3>${houseTable(t)}`},
- users:t=>{const admins=S.users.filter(u=>u.r==="admin").length,list=[...S.users].sort((a,b)=>LEVEL[b.r]-LEVEL[a.r]),mine=myLvl();
+ users:t=>{const admins=S.users.filter(u=>u.r==="admin").length,list=[...S.users].filter(u=>!CLOUD_ON||u.r!=="student"||u.c===codeCls).sort((a,b)=>LEVEL[b.r]-LEVEL[a.r]),mine=myLvl();
   return `<h2>${t.tabs.users}</h2><h3>${t.power}</h3><div class="list">${[4,3,2,1].map(l=>`<div class="row${l===mine?" now":""}"><div class="lv l${l}">${5-l}</div><div class="what"><b>${t.lvl[l]}</b><span>${(c=>`${c} ${c===1?t.acc1:t.accN}`)(S.users.filter(u=>LEVEL[u.r]===l).length)}</span></div>${l===mine?`<span class="chip red">${lang==="es"?"Tú":"You"}</span>`:""}</div>`).join("")}</div><p class="note">${t.powerNote}</p>
-  <div class="list">${list.map(u=>{const lockRole=(u.r==="admin"&&admins===1)||(u.r==="student"&&S.users.filter(x=>x.r==="student").length===1)||!canManage(u)||u.id===curId;return `<div class="row"><div class="lv l${LEVEL[u.r]}" title="${t.level} ${5-LEVEL[u.r]}">${5-LEVEL[u.r]}</div><div class="what"><b>${esc(u.n)}</b><span>${esc(u.c)}${u.r==="student"&&canSeeCodes()?` · ${t.studentCode}: <code class="code">${shownCodes.has(u.id)?(u.code||"—"):"••••••"}</code> <button class="linkbtn" data-showcode="${u.id}">${shownCodes.has(u.id)?t.hideCode:t.showCode}</button> · <button class="linkbtn" data-newcode="${u.id}">${t.newCode}</button>`:""}</span></div>${lockRole?`<span class="chip">${t.roles[u.r]}</span>`:`<select id="u-${u.id}" data-user="${u.id}" aria-label="${t.role}">${ROLES.filter(r=>canGive(r)||r===u.r).map(r=>`<option value="${r}" ${r===u.r?"selected":""}>${t.roles[r]}</option>`).join("")}</select>`}${lockRole?"":delBtn("user:"+u.id,t)}</div>`}).join("")}</div><p class="note">${t.lastAdmin}</p><p class="note">${t.codeNote}</p>${flashNote()}
+  ${CLOUD_ON?`<h3>${t.st.students}</h3>${classPicker(t,"codeCls")}`:""}<div class="list">${list.map(u=>{const lockRole=(u.r==="admin"&&admins===1)||(u.r==="student"&&S.users.filter(x=>x.r==="student").length===1)||!canManage(u)||u.id===curId;return `<div class="row"><div class="lv l${LEVEL[u.r]}" title="${t.level} ${5-LEVEL[u.r]}">${5-LEVEL[u.r]}</div><div class="what"><b>${esc(u.n)}</b><span>${esc(u.c)}${u.r==="student"&&canSeeCodes()?` · ${t.studentCode}: <code class="code">${shownCodes.has(String(u.id))?(u.code||"—"):"••••••"}</code> <button class="linkbtn" data-showcode="${u.id}">${shownCodes.has(String(u.id))?t.hideCode:t.showCode}</button> · <button class="linkbtn" data-newcode="${u.id}">${t.newCode}</button>`:""}</span></div>${lockRole?`<span class="chip">${t.roles[u.r]}</span>`:`<select id="u-${u.id}" data-user="${u.id}" aria-label="${t.role}">${ROLES.filter(r=>canGive(r)||r===u.r).map(r=>`<option value="${r}" ${r===u.r?"selected":""}>${t.roles[r]}</option>`).join("")}</select>`}${lockRole?"":delBtn("user:"+u.id,t)}</div>`}).join("")}</div><p class="note">${t.lastAdmin}</p><p class="note">${t.codeNote}</p>${flashNote()}
   <h3>${t.addUser}</h3><form id="f-user"><input id="uName" class="full" required value="${esc(draftName)}" placeholder="${t.phName}" aria-label="${t.phName}"><select id="uRole" class="full" aria-label="${t.role}">${ROLES.filter(canGive).map(r=>`<option value="${r}" ${r===newRole?"selected":""}>${t.roles[r]}</option>`).join("")}</select>${newRole==="student"?`<div class="full">${classPicker(t,"newCls")}</div><input type="hidden" id="uCls" value="${newCls}">`:`<input id="uC" class="full" value="${esc(draftC)}" placeholder="${t.phClassSubj}" aria-label="${t.phClassSubj}">`}<button>${t.addUser}</button></form>${errNote()}
   ${pinMsg?`<p class="note err">${pinMsg}</p>`:""}${flashNote()}
   <div class="lock">🔒 <span>${t.lockNote}</span></div><button class="btn" data-lock="1" style="justify-self:start">${t.lockBtn}</button>`}
@@ -593,6 +594,8 @@ function lockView(t){const wait=lockLeft("staff");
 
 let notice="";
 const CHANGELOG=[
+ {v:"36",date:"2026-10-23",en:["Mochila now runs on a real school server: homework, news, merits, lunch and ideas are the same on every phone","Your student code works on any phone, and you stay logged in","Teachers see live lunch numbers and homework progress from the whole class","The lock after wrong codes is now checked by the server, per device","News and alerts refresh by themselves every minute","Nothing about pupils is stored on the phone any more"],
+  es:["Mochila funciona ahora con un servidor real del colegio: deberes, noticias, méritos, comedor e ideas son iguales en todos los móviles","Tu código de alumno funciona en cualquier móvil y la sesión se queda abierta","El profesorado ve en directo el comedor y el progreso de los deberes de toda la clase","El bloqueo tras códigos incorrectos lo comprueba ahora el servidor, por dispositivo","Las noticias y alertas se actualizan solas cada minuto","Ya no se guarda nada de los alumnos en el móvil"]},
  {v:"35",date:"2026-10-23",en:["Extra protection: the app blocks strange scripts and cannot send your data to other websites","HomeworkHelpie: a homework helper that explains and gives hints (Homework → HomeworkHelpie)","Staff log in with their own staff code","After 3 wrong codes you have to wait, and the wait gets longer each time","Test planner: choose the days you want to study for a test","Reminder for homework that is due tomorrow","School map, sports results and events for your own Year","Share and like council ideas straight from your Today screen","This What's new screen"],
   es:["Más protección: la app bloquea scripts extraños y no puede enviar tus datos a otras webs","HomeworkHelpie: una ayuda con los deberes que explica y da pistas (Deberes → HomeworkHelpie)","El personal entra con su propio código","Tras 3 códigos incorrectos tienes que esperar, y cada vez la espera es más larga","Plan de exámenes: elige los días en que quieres estudiar","Recordatorio de los deberes para mañana","Plano del colegio, resultados deportivos y eventos de tu Year","Comparte y apoya ideas del consejo desde tu pantalla de Hoy","Esta pantalla de Novedades"]},
  {v:"27",date:"2026-10-22",en:["New app icon: the school backpack with a B","Mochila can be put on your home screen","Main page for everyone, without personal information","Staff see what percentage of students has lunch each day","Student codes are hidden until a teacher taps Show"],
@@ -607,10 +610,10 @@ function updCard(t){if(!showUpdCard)return "";const c=CHANGELOG[0];return `<div 
 function whatsNewView(t){return `<section class="sec"><h2>✨ ${t.newTitle}</h2>${CHANGELOG.map((c,i)=>`<div class="card${i===0?" upd":""}"><div class="cardhead"><b>${fmt(c.date,{day:"numeric",month:"long",year:"numeric"})}</b><span class="note">${t.version} ${c.v}</span></div><ul>${c[lang].map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}<button class="btn ghost" data-closenew="1" style="justify-self:start">← ${t.newBack}</button></section>`}
 const newLink=t=>`<button class="linkbtn small" data-whatsnew="1">✨ ${t.newLink} · ${t.version} ${APP_VERSION}</button>`;
 let viewPublic=true,ptab="main";
-const APP_VERSION="35";{const old=store.get("appver",null);store.set("appver",APP_VERSION);if(old&&old!==APP_VERSION)showUpdCard=true}const shownCodes=new Set();
+const APP_VERSION="36";{const old=store.get("appver",null);store.set("appver",APP_VERSION);if(old&&old!==APP_VERSION)showUpdCard=true}const shownCodes=new Set();
 const safe=(name,fn)=>e=>{try{fn(e)}catch(err){logErr(err,"action: "+name);try{render()}catch(x){}}};
 if(typeof window!=="undefined"&&window.addEventListener){window.addEventListener("error",e=>logErr(e.error||e.message,"page"));window.addEventListener("unhandledrejection",e=>logErr(e.reason,"page"))}
-function logErr(e,where){try{S.errors=(S.errors||[]).concat({d:new Date().toISOString(),w:where,m:String((e&&(e.message||e.code))||e).slice(0,240)}).slice(-30);save()}catch(x){}}
+function logErr(e,where){try{if(CLOUD_ON)rpc("log_error",{p_place:String(where).slice(0,80),p_message:String((e&&(e.message||e.code))||e).slice(0,300)}).catch(()=>{});S.errors=(S.errors||[]).concat({d:new Date().toISOString(),w:where,m:String((e&&(e.message||e.code))||e).slice(0,240)}).slice(-30);save()}catch(x){}}
 function repairData(){const d=SEED();for(const k in d){if(S[k]===undefined||S[k]===null||Array.isArray(d[k])!==Array.isArray(S[k])||typeof S[k]!==typeof d[k])S[k]=d[k]}
  S.users=S.users.filter(u=>u&&u.n&&LEVEL[u.r]);if(!S.users.some(u=>u.r==="admin"))S.users.push({id:Date.now(),n:KAS,r:"admin",c:"Admin"});if(!S.users.some(u=>u.r==="student"))S.users.push({id:Date.now()+1,n:KAS,r:"student",c:"Year 7A"});
  for(const k of["hw","news","events","lost","points","subs","absences","papers","ideas"])S[k]=S[k].filter(x=>x&&typeof x==="object");
@@ -669,7 +672,7 @@ function renderInner(){
  if(!adminMode&&!logged){document.getElementById("tabs").innerHTML="";document.getElementById("who").textContent="";document.getElementById("main").innerHTML=stuLoginView(t);return}
  if(!isOpen(me())){document.getElementById("tabs").innerHTML="";document.getElementById("main").innerHTML=lockView(t);return}
  document.getElementById("tabs").innerHTML=ROLE_TABS[r].map(k=>`<button id="tab-${k}" role="tab" data-tab="${k}" aria-selected="${k===tab}">${I(ICON[k])}<span>${t.tabs[k]}</span></button>`).join("");
- document.getElementById("main").innerHTML=`<section class="sec">${notice?`<p class="note ok">🔧 ${notice}</p>`:""}${tab===ROLE_TABS[r][0]?updCard(t):""}${VIEWS[tab](t)}${!adminMode&&logged?`<button class="btn ghost" data-logout="1" style="justify-self:start">↩ ${t.logout}</button>`:""}${newLink(t)}<p class="note">${t.demoNote}</p></section>`;notice="";
+ document.getElementById("main").innerHTML=`<section class="sec">${notice?`<p class="note ok">🔧 ${notice}</p>`:""}${tab===ROLE_TABS[r][0]?updCard(t):""}${VIEWS[tab](t)}${!adminMode&&logged?`<button class="btn ghost" data-logout="1" style="justify-self:start">↩ ${t.logout}</button>`:""}${newLink(t)}<p class="note">${CLOUD_ON?t.cloudNote:t.demoNote}</p></section>`;notice="";
 }
 function doDelete(key){const[k,id]=key.split(":"),n=+id;
  if(k==="hw")S.hw=S.hw.filter(x=>x.id!==n);if(k==="ev")S.events=S.events.filter(x=>x.id!==n);if(k==="news")S.news=S.news.filter(x=>x.id!==n||!canEditNews(x));
@@ -698,7 +701,7 @@ document.addEventListener("click",safe("click",e=>{
  else if(d.botstop){if(botCtl)botCtl.abort();return}
  else if(d.botclear){botTurns=[];botNote=""}
  else if(d.plan){const[id,dt]=d.plan.split("|"),pl=myPlan(),l=pl[id]||[];if(role()==="student"){pl[id]=l.includes(dt)?l.filter(x=>x!==dt):[...l,dt];save()}}
- else if(d.showcode&&canSeeCodes()){const id=+d.showcode;shownCodes.has(id)?shownCodes.delete(id):shownCodes.add(id)}
+ else if(d.showcode&&canSeeCodes()){const id=String(d.showcode);shownCodes.has(id)?shownCodes.delete(id):shownCodes.add(id)}
  else if(d.orig){const id=+d.orig;showOrig.has(id)?showOrig.delete(id):showOrig.add(id)}
  else if(d.trans){translateIdea(+d.trans);return}
  else if(d.copylog){const ta=document.getElementById("logtxt"),txt=ta?ta.value:"";try{navigator.clipboard.writeText(txt).then(()=>{flash=T[lang].copied;render()},()=>{if(ta){ta.focus();ta.select()}})}catch(err){if(ta){ta.focus();ta.select()}}return}
@@ -731,7 +734,7 @@ document.addEventListener("change",safe("change",e=>{
  const el=e.target,d=el.dataset;
  if(el.id==="uRole"){newRole=el.value;if(!ROLES.filter(canGive).includes(newRole))newRole="student";render();return}
  if(el.id==="role"&&!superAdmin){render();return}
- if(el.id==="role"){curId=+el.value;store.set("cur",curId);tab=null;pinMsg="";flash="";pending=null;forgotOpen=false}
+ if(el.id==="role"){const pu=S.users.find(u=>String(u.id)===el.value);curId=pu?pu.id:curId;store.set("cur",curId);tab=null;pinMsg="";flash="";pending=null;forgotOpen=false}
  else if(el.id==="viewCls")viewCls=el.value;
  else if(el.id==="gCls"||el.id==="mCls"){giveCls=el.value;flash=""}
  else if(el.id==="lunchCls")lunchCls=el.value;
@@ -784,7 +787,123 @@ document.addEventListener("submit",safe("submit",e=>{
  if(f==="f-user"){const r=v("uRole");let c=r==="student"?v("uCls"):v("uC");draftName="";draftC="";if(r==="student"&&!CLASSES.includes(c))c="Year 7A";S.users.push({id:Date.now(),n:v("uName"),r,c:c||t.roles[r],code:r==="student"?newCode():undefined});flash=v("uName")}
  save();render();
 }));
-render();
+/* ---------- Server (Supabase) ---------- */
+const CMSG={en:{net:"No connection to the school server. Check your internet and try again.",lunch_closed:"Lunch choice closes at 10:00.",no_school:"There is no school today.",last_admin:"There must always be one admin.",last_student:"There must always be one student account.",too_many_today:"You can send 5 ideas a day.",not_logged_in:"You were logged out. Please log in again.",only_students:"Only students can get this.",not_found:"Not found.",failed:"That did not work. Try again.",loading:"Loading…",offline:"Demo mode: this device can't reach the school server, so changes stay on this device."},
+ es:{net:"No hay conexión con el servidor del colegio. Revisa internet e inténtalo otra vez.",lunch_closed:"La elección del comedor cierra a las 10:00.",no_school:"Hoy no hay clase.",last_admin:"Siempre tiene que haber un admin.",last_student:"Siempre tiene que haber una cuenta de alumno.",too_many_today:"Puedes enviar 5 ideas al día.",not_logged_in:"Se ha cerrado tu sesión. Vuelve a entrar.",only_students:"Solo los alumnos pueden recibir esto.",not_found:"No encontrado.",failed:"No ha funcionado. Inténtalo otra vez.",loading:"Cargando…",offline:"Modo demo: este dispositivo no llega al servidor del colegio, así que los cambios se quedan en este dispositivo."}};
+const ss={get(k){try{return sessionStorage.getItem(k)}catch(e){return null}},set(k,v){try{sessionStorage.setItem(k,v)}catch(e){}},del(k){try{sessionStorage.removeItem(k)}catch(e){}}};
+const DEV=(()=>{let d=store.get("mochila-dev",null);if(!d||!/^[A-Za-z0-9]{16,40}$/.test(d)){const a="abcdefghijkmnpqrstuvwxyz23456789";d="";try{crypto.getRandomValues(new Uint8Array(20)).forEach(x=>d+=a[x%a.length])}catch(e){for(let i=0;i<20;i++)d+=a[Math.floor(Math.random()*a.length)]}store.set("mochila-dev",d)}return d})();
+let stuTok=store.get("mochila-tok",null),staffTok=ss.get("mochila-staff"),staffCode=null,cloudBusy=false,lastSig="";
+const tok=()=>adminMode?staffTok:stuTok;
+async function rpc(fn,args){let r;try{r=await fetch(CLOUD.url+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:CLOUD.key,"Content-Type":"application/json","x-client-info":"mochila/"+DEV},body:JSON.stringify(args||{}),cache:"no-store",referrerPolicy:"no-referrer"})}catch(e){throw{code:"net"}}
+ const txt=await r.text();let j=null;try{j=txt?JSON.parse(txt):null}catch(e){}
+ if(!r.ok)throw{code:String((j&&j.message)||"failed")};return j}
+const call=(fn,args)=>rpc(fn,Object.assign({p_token:tok()},args||{}));
+function cErr(e){const c=String(e&&e.code||"failed"),t=T[lang],m=CMSG[lang]||CMSG.en;
+ if(c==="not_allowed")return t.notAllowed;if(c==="past_date")return t.pastDate;if(c==="no_articles")return t.noArticles;
+ if(c==="not_logged_in"){if(adminMode){staffTok=null;ss.del("mochila-staff");adminMode=false;superAdmin=false}else{stuTok=null;store.del("mochila-tok");stuLogin=null}}
+ return m[c]||m.failed}
+const GUEST={id:"guest",n:"",r:"student",c:"Year 7A"};
+function blankS(){return{v:6,cloud:1,plan:store.get("mochila-plan",{})||{},sports:[],done:{},lunch:{},errors:[],ideas:[],markLog:[],subs:[],hw:[],marks:{},points:[],events:[],news:[],papers:[],lost:[],absences:[],users:[{id:"guest",n:"",r:"student",c:"Year 7A"}],houseMerits:{}}}
+function applyData(j){const p=j.pub||{},v=j.priv;const keepPlan=S.plan||{};
+ const n=blankS();n.plan=keepPlan;n.news=p.news||[];n.events=p.events||[];n.sports=p.sports||[];n.papers=p.papers||[];n.houseMerits=p.houseMerits||{};
+ if(v){for(const k of["users","hw","done","marks","points","lunch","absences","ideas","subs","lost","errors"])if(v[k]!=null)n[k]=v[k];n.ideas.forEach(x=>{if(!x.tr)delete x.tr});n.myId=v.me}
+ else n.ideas=p.pubIdeas||[];
+ n.ideas.forEach(x=>{if(!x.tr)delete x.tr});S=n;return v}
+async function pull(quiet){const t0=tok();let j;
+ try{j=await rpc("get_app",t0?{p_token:t0}:{})}
+ catch(e){if(e.code==="not_logged_in"){cErr(e);j=await rpc("get_app",tok()?{p_token:tok()}:{})}else throw e}
+ const sig=JSON.stringify(j);if(quiet&&sig===lastSig)return false;lastSig=sig;
+ const v=applyData(j);
+ if(v&&adminMode){if(!S.users.some(u=>u.id===curId))curId=v.me}
+ else if(v){stuLogin=v.me;curId=v.me}
+ else{stuLogin=null;curId="guest"}
+ return true}
+async function act(fn,args,okMsg){if(cloudBusy)return;cloudBusy=true;flash="";pinMsg="";let res;
+ try{res=await call(fn,args);if(okMsg)flash=typeof okMsg==="function"?okMsg(res):okMsg}
+ catch(e){pinMsg=cErr(e);flash=pinMsg;cloudBusy=false;try{await pull()}catch(x){}render();return null}
+ try{await pull()}catch(e){pinMsg=cErr(e)}cloudBusy=false;render();return res}
+function cloudTr(x){if(CLOUD_ON&&x&&x.tr)call("set_idea_translation",{p_idea:x.id,p_en:x.tr.en,p_es:x.tr.es}).catch(()=>{})}
+function mirrorLock(k,res,e){const l=lockGet(k);
+ if(e&&/^locked:(\d+)/.test(e.code)){l.until=Date.now()+(+RegExp.$1)*1000;l.fails=0}
+ else if(res){const left=+res.tries_left;if(left<=0){l.until=Date.now()+LOCK_STEPS[Math.min(l.level,LOCK_STEPS.length-1)];l.level++;l.fails=0}else l.fails=3-left}
+ store.set("lock_"+k,l);const ms=lockLeft(k);if(ms>0&&ms<=20*60e3)setTimeout(()=>render(),ms+500)}
+const stop=e=>{e.preventDefault();e.stopImmediatePropagation()};
+const fv=id=>(document.getElementById(id)||{value:""}).value.trim();
+const userByName=(n,c)=>S.users.find(u=>u.r==="student"&&u.n===n&&(!c||u.c===c));
+const SUBMITS={
+ "f-stu":async t=>{if(lockLeft("stu")>0){render();return}const c=fv("stuCode");
+  try{const r=await rpc("login_student",{p_code:c});if(r&&r.ok){lockOk("stu");stuTok=r.token;store.set("mochila-tok",r.token);adminMode=false;superAdmin=false;await pull();viewPublic=false;tab=null;pinMsg=""}else{mirrorLock("stu",r);pinMsg=lockLeft("stu")>0?"":t.wrongCode}}
+  catch(e){if(/^locked/.test(e.code)){mirrorLock("stu",null,e);pinMsg=""}else pinMsg=cErr(e)}render()},
+ "f-pin":async t=>{if(lockLeft("staff")>0){render();return}const c=fv("pin1");
+  try{const r=await rpc("login_staff",{p_code:c});
+   if(r&&r.ok&&r.pick){lockOk("staff");staffCode=c;pickTeacher=true;pinMsg="";S.users=[...S.users.filter(u=>u.r!=="staff"),...r.pick.map(p=>({id:p.id,n:p.name,r:"staff",c:p.subject}))];setTimeout(()=>{staffCode=null;if(pickTeacher){pickTeacher=false;render()}},120e3)}
+   else if(r&&r.ok){lockOk("staff");await staffIn(r)}
+   else{mirrorLock("staff",r);pinMsg=lockLeft("staff")>0?"":t.wrongPin}}
+  catch(e){if(/^locked/.test(e.code)){mirrorLock("staff",null,e);pinMsg=""}else pinMsg=cErr(e)}render()},
+ "f-own":t=>{const d=fv("hwDue");if(d&&d<TODAY){pinMsg=t.pastDate;render();return}return act("add_own_homework",{p_subject:fv("hwSubject"),p_task:fv("hwTask"),p_due:d||null})},
+ "f-assign":t=>{if(fv("aDue")<TODAY){pinMsg=t.pastDate;render();return}const c=fv("aCls");return act("set_homework",{p_class:c,p_subject:fv("aSubj"),p_type:fv("aType"),p_task:fv("aTask"),p_due:fv("aDue")},`${t.sent||t.send}: ${c}`)},
+ "f-give":t=>{const u=userByName(fv("gStudent"),fv("gCls"));if(!u){render();return}const k=fv("gKind");return act("give_point",{p_student:u.id,p_kind:k,p_reason:fv("gReason")},`${t[k]} · ${u.n}`)},
+ "f-mark":t=>{const u=userByName(fv("mStudent"),fv("mCls"));if(!u){render();return}const s=fv("mSubject"),g=fv("mGrade");return act("set_grade",{p_student:u.id,p_subject:s,p_grade:+g,p_effort:fv("mEffort"),p_comment:fv("mComment")},`${t.saved}: ${u.n} · ${t.subj[s]||s} · ${g}`)},
+ "f-event":t=>{if(fv("eDate")<TODAY){pinMsg=t.pastDate;render();return}return act("add_event",{p_date:fv("eDate"),p_title:fv("eTitle"),p_year:+fv("eYear")||null})},
+ "f-alert":t=>{if(!ALERTS.includes(fv("alCat")))return;newsCat="all";return act("add_news",{p_cat:fv("alCat"),p_title:fv("alTitle"),p_body:fv("alText")})},
+ "f-news":t=>act("add_news",{p_cat:fv("nCat"),p_title:fv("nTitle"),p_body:fv("nText")}),
+ "f-paper":t=>{const raw=[1,2,3].map(i=>({h:fv("pH"+i),b:fv("pB"+i),a:fv("pA"+i)}));const bad=raw.findIndex(a=>(a.h||a.b||a.a)&&!(a.h&&a.b));
+  if(bad>=0){pinMsg=t.articleIncomplete.replace("{n}",bad+1);render();return}
+  const arts=raw.filter(a=>a.h&&a.b);if(!arts.length&&!S.subs.some(s=>s.status==="approved")){pinMsg=t.noArticles;render();return}
+  return act("publish_paper",{p_articles:arts},no=>{paperNo=no;return `${t.issue} ${no}`})},
+ "f-lost":t=>act("add_lost",{p_item:fv("lItem"),p_place:fv("lWhere")}),
+ "f-sub":t=>act("submit_article",{p_headline:fv("sH"),p_body:fv("sB")},t.subSent),
+ "f-sport":t=>act("add_sport",{p_team:fv("spTeam").slice(0,80),p_opp:fv("spOpp").slice(0,80),p_us:Math.max(0,+fv("spUs")||0),p_them:Math.max(0,+fv("spThem")||0)}),
+ "f-idea":async t=>{const el=document.getElementById("ideaAnon"),txt=fv("ideaText").slice(0,500);if(!txt)return;ideaSort="new";
+  const id=await act("add_idea",{p_text:txt,p_anon:!!(el&&el.checked),p_lang:lang},t.ideaSent);if(id)setTimeout(()=>translateIdea(id),0)},
+ "f-abs":t=>{if(fv("absDate")<TODAY){pinMsg=t.pastDate;render();return}return act("report_absence",{p_day:fv("absDate"),p_reason:fv("absReason"),p_time:fv("absTime"),p_note:fv("absNote")},t.reported)},
+ "f-user":t=>{const r=fv("uRole");if(!canGive(r)){pinMsg=t.notAllowed;render();return}const nm=fv("uName"),grp=x=>x==="student"?"s":"o";
+  if(S.users.some(u=>u.n.toLowerCase()===nm.toLowerCase()&&grp(u.r)===grp(r))){pinMsg=t.nameTaken;render();return}
+  let c=r==="student"?fv("uCls"):fv("uC");if(r==="student"&&!CLASSES.includes(c))c="Year 7A";draftName="";draftC="";
+  return act("add_account",{p_name:nm,p_role:r,p_class:c||t.roles[r]},nm)}
+};
+async function staffIn(r){staffTok=r.token;ss.set("mochila-staff",r.token);staffCode=null;adminMode=true;superAdmin=r.account.role==="admin";pickTeacher=false;loginOpen=false;viewPublic=false;tab=null;pinMsg="";curId=r.account.id;
+ try{await pull()}catch(e){pinMsg=cErr(e)}curId=r.account.id}
+async function leaveStaff(){const t0=staffTok;staffTok=null;ss.del("mochila-staff");superAdmin=false;pickTeacher=false;staffCode=null;shownCodes.clear();adminMode=false;loginOpen=false;tab=null;pinMsg="";forgotOpen=false;ptab="main";
+ if(t0)rpc("logout",{p_token:t0}).catch(()=>{});try{await pull()}catch(e){}viewPublic=!stuTok;render()}
+function cloudClick(e){const b=e.target.closest&&e.target.closest("button");if(!b||(b.closest("form")&&b.type!=="button"))return;const d=b.dataset,t=T[lang];
+ const go=(fn,args,msg)=>{stop(e);pending=null;act(fn,args,msg)};
+ if(d.del){const[k,id]=d.del.split(":");stop(e);pending=null;
+  if(["hw","lost","idea","sport","abs"].includes(k))act("remove_item",{p_kind:k,p_id:+id});
+  else if(k==="ev")act("delete_event",{p_event:+id});else if(k==="news")act("delete_news",{p_news:+id});
+  else if(k==="user"){if(id===String(curId)){flash=t.notAllowed;render()}else act("delete_account",{p_account:id})}return}
+ if(d.vote)return go("vote_idea",{p_idea:+d.vote});
+ if(d.newcode){if(!canSeeCodes())return stop(e);const u=S.users.find(x=>String(x.id)===d.newcode);return go("new_student_code",{p_student:d.newcode},`${t.newCodeMade} ${u?u.n:""}`)}
+ if(d.lunch){if(b.disabled)return stop(e);return go("set_lunch",{p_answer:d.lunch})}
+ if(d.claim)return go("claim_lost",{p_item:+d.claim});
+ if(d.handed)return go("hand_over",{p_item:+d.handed});
+ if(d.approve||d.reject)return go("review_submission",{p_sub:+(d.approve||d.reject),p_approve:!!d.approve});
+ if(d.endalert)return go("end_alert",{p_news:+d.endalert});
+ if(d.clearlog)return go("clear_errors",{});
+ if(d.reset){stop(e);forgotOpen=false;render();return}
+ if(d.repairall){stop(e);pull().then(()=>{tab=null;notice=t.repaired;render()},er=>{pinMsg=cErr(er);render()});return}
+ if(d.pickteacher){stop(e);if(!pickTeacher||!staffCode){pickTeacher=false;render();return}
+  rpc("login_staff",{p_code:staffCode,p_teacher:d.pickteacher}).then(r=>r&&r.ok?staffIn(r):(pinMsg=t.wrongPin,pickTeacher=false)).catch(er=>{pinMsg=cErr(er)}).then(()=>render());return}
+ if(d.lock||d.lockall||d.tostudent){stop(e);leaveStaff();return}
+ if(d.logout){stop(e);const t0=stuTok;stuTok=null;store.del("mochila-tok");stuLogin=null;botTurns=[];botDraft="";viewPublic=true;ptab="main";tab=null;pinMsg="";if(t0)rpc("logout",{p_token:t0}).catch(()=>{});pull().catch(()=>{}).then(()=>render());return}
+}
+function cloudChange(e){const el=e.target,d=el.dataset;
+ if(d.done){stop(e);act("set_done",{p_homework:+d.done,p_done:!!el.checked});return}
+ if(d.istatus){stop(e);act("set_idea_status",{p_idea:+d.istatus,p_status:el.value});return}
+ if(d.user){stop(e);const u=S.users.find(x=>String(x.id)===d.user);if(!u||!canManage(u)||!canGive(el.value)||u.id===curId){el.value=u?u.r:el.value;flash=T[lang].notAllowed;render();return}act("set_role",{p_account:u.id,p_role:el.value});return}
+}
+function cloudSubmit(e){const f=e.target.id,h=SUBMITS[f];if(!h)return;stop(e);flash="";pinMsg="";if(cloudBusy)return;try{const p=h(T[lang]);if(p&&p.catch)p.catch(er=>{pinMsg=cErr(er);render()})}catch(er){logErr(er,"submit "+f)}}
+function typing(){const a=document.activeElement;return a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)}
+async function refresh(){if(cloudBusy||document.hidden)return;try{if(await pull(true)&&!typing())render()}catch(e){}}
+async function cloudBoot(){const m=document.getElementById("main"),c=CMSG[lang]||CMSG.en;if(m)m.innerHTML=`<section class="sec"><p class="note">${c.loading}</p></section>`;
+ window.addEventListener("click",cloudClick,true);window.addEventListener("change",cloudChange,true);window.addEventListener("submit",cloudSubmit,true);
+ try{if(staffTok){adminMode=true;try{const j=await rpc("get_app",{p_token:staffTok});const a=(j.priv&&j.priv.users||[]).find(u=>u.id===j.priv.me);applyData(j);curId=j.priv.me;superAdmin=!!a&&a.r==="admin";viewPublic=false;lastSig=JSON.stringify(j)}catch(e){if(e.code==="net")throw e;adminMode=false;staffTok=null;ss.del("mochila-staff")}}
+  if(!adminMode){await pull();if(stuLogin)viewPublic=false}
+  store.del("mochila-demo");}
+ catch(e){window.removeEventListener("click",cloudClick,true);window.removeEventListener("change",cloudChange,true);window.removeEventListener("submit",cloudSubmit,true);
+  CLOUD_ON=false;adminMode=false;const o=store.get("mochila-demo",null);S=o&&o.v===6&&!o.cloud?o:SEED();repairData();curId=studentId();stuLogin=null;notice=c.offline;render();return}
+ render();setInterval(refresh,45e3);document.addEventListener("visibilitychange",()=>{if(!document.hidden)refresh()})}
+if(CLOUD_ON)cloudBoot();else render();
 </script>
 
 </body></html>
