@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XH5Pw8WlcZRUqJSR/z3k7zgJVof96FPyoAIpRJsl6V4=' 'sha256-LdlZmv89HEkVR22EHv72OM/VF7sFnPplQuIJLH09DYM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; connect-src 'self' https://tkorpuzmxftlplzeztbl.supabase.co; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-QsdybrY8Ic9YVXooNmx8qreayHzrRgDl/EclsFxuYLs=' 'sha256-LdlZmv89HEkVR22EHv72OM/VF7sFnPplQuIJLH09DYM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; connect-src 'self' https://tkorpuzmxftlplzeztbl.supabase.co; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b2a4a">
@@ -242,7 +242,7 @@ const T={
   lockNote:"In the real version only BSV students, parents and staff sign in, with their school account.",
   st:{students:"Students (school)",classes:"Classes",merits:"Merits given",demerits:"Demerits given",lunchYes:"Lunch today",absent:"Absent today"},role:"Role",
   current:"Average",target:"Target",effort:"Effort",outOf:"Grades 1–9",onTarget:"subjects on or above target",noGrades:"No grades yet.",
-  lunchQ:"School lunch today?",yes:"Yes",no:"No",lunchSaved:"Sent to the kitchen",lunchDeadline:"Change before 10:00",lunchClosed:"Closed after 10:00. Ask at reception.",noSchool:"No school today.",menu:"Menu",
+  lunchQ:"School lunch today?",yes:"Yes",no:"No",lunchSaved:"Sent to the kitchen",lunchDeadline:"Change before 10:00",lunchQDay:"School lunch on {d}?",lunchBefore:"Change until {d} 10:00",lunchToday:"For today it is too late after 10:00. Ask at reception.",lunchClosed:"Closed after 10:00. Ask at reception.",noSchool:"No school today.",menu:"Menu",
   lunchClubs:"Lunch clubs",council:"Student council",councilText:"Meets every other Wednesday at lunch in the library. Your class rep takes your ideas.",idea:"Your idea for the council",sendIdea:"Send idea",ideaSent:"Idea sent",
   mineBtn:"That's mine",claimed:"Collect at reception",found:"Found",addItem:"Add found item",
   issue:"Issue",newIssue:"New",editors:"Written by BSV students",phHeadline:"Headline",phArticle:"Article",phAuthor:"Written by",pubIssue:"Publish issue",article:"Article",optional:"optional",
@@ -269,7 +269,7 @@ const T={
   lockNote:"En la versión real solo alumnos, familias y personal del BSV entran, con su cuenta del colegio.",
   st:{students:"Alumnos (colegio)",classes:"Clases",merits:"Méritos dados",demerits:"Deméritos dados",lunchYes:"Comen hoy",absent:"Ausentes hoy"},role:"Rol",
   current:"Media",target:"Objetivo",effort:"Esfuerzo",outOf:"Notas 1–9",onTarget:"asignaturas en su objetivo o por encima",noGrades:"Aún no hay notas.",
-  lunchQ:"¿Comedor hoy?",yes:"Sí",no:"No",lunchSaved:"Enviado a cocina",lunchDeadline:"Cambia antes de las 10:00",lunchClosed:"Cerrado después de las 10:00. Pregunta en recepción.",noSchool:"Hoy no hay clase.",menu:"Menú",
+  lunchQ:"¿Comedor hoy?",yes:"Sí",no:"No",lunchSaved:"Enviado a cocina",lunchDeadline:"Cambia antes de las 10:00",lunchQDay:"¿Comedor el {d}?",lunchBefore:"Puedes cambiarlo hasta el {d} a las 10:00",lunchToday:"Para hoy ya es tarde después de las 10:00. Pregunta en recepción.",lunchClosed:"Cerrado después de las 10:00. Pregunta en recepción.",noSchool:"Hoy no hay clase.",menu:"Menú",
   lunchClubs:"Clubs a la hora de comer",council:"Consejo de alumnos",councilText:"Se reúne cada dos miércoles a la hora de comer en la biblioteca. Tu delegado recoge tus ideas.",idea:"Tu idea para el consejo",sendIdea:"Enviar idea",ideaSent:"Idea enviada",
   mineBtn:"Es mío",claimed:"Recógelo en recepción",found:"Encontrado",addItem:"Añadir objeto",
   issue:"Número",newIssue:"Nuevo",editors:"Escrito por alumnos del BSV",phHeadline:"Titular",phArticle:"Artículo",phAuthor:"Escrito por",pubIssue:"Publicar número",article:"Artículo",optional:"opcional",
@@ -433,9 +433,10 @@ function schoolDays(n){const out=[];let d=TODAY,guard=0;while(out.length<n&&guar
 function lunchDay(d){const v=Object.values(S.lunch[d]||{});return{yes:v.filter(x=>x==="yes").length,no:v.filter(x=>x==="no").length}}
 const pct=(a,b)=>b?Math.round(a/b*1000)/10:0;
 function lunchCounts(){let yes=0,no=0,all=0;CLASSES.forEach(c=>roster(c).forEach(n=>{all++;const a=lunchOf(n);if(a==="yes")yes++;else if(a==="no")no++}));return{yes,no,none:all-yes-no}}
-function lunchCard(t,who){const a=lunchOf(who),closed=isWeekday&&new Date().getHours()>=10,dis=closed?"disabled":"";
- if(!isWeekday)return `<div class="card"><b>${t.lunchQ}</b><p class="note">${t.noSchool}</p></div>`;
- return `<div class="card"><div class="cardhead"><b>${t.lunchQ}</b><span class="note">${a?"✓ "+t.lunchSaved:closed?"":t.lunchDeadline}</span></div><div class="toggle"><button id="l-yes" class="yes" data-lunch="yes" aria-pressed="${a==="yes"}" ${dis}>${t.yes}</button><button id="l-no" class="no" data-lunch="no" aria-pressed="${a==="no"}" ${dis}>${t.no}</button></div>${closed?`<p class="note">${t.lunchClosed}</p>`:""}<p class="note">${t.menu}: ${MENU[lang].join(" · ")}</p></div>`}
+function lunchTarget(){const n=new Date();let d=new Date(n.getFullYear(),n.getMonth(),n.getDate(),12);const wd=d.getDay();if(wd>=1&&wd<=5&&n.getHours()<10)return iso(d);do{d.setDate(d.getDate()+1)}while(d.getDay()===0||d.getDay()===6);return iso(d)}
+function lunchCard(t,who){const day=lunchTarget(),today=day===TODAY,a=lunchOf(who,day),wdName=fmt(day,{weekday:"long"});
+ const q=today?t.lunchQ:t.lunchQDay.replace("{d}",wdName),note=a?"✓ "+t.lunchSaved:today?t.lunchDeadline:t.lunchBefore.replace("{d}",wdName);
+ return `<div class="card"><div class="cardhead"><b>${q}</b><span class="note">${note}</span></div><div class="toggle"><button id="l-yes" class="yes" data-lunch="yes" aria-pressed="${a==="yes"}">${t.yes}</button><button id="l-no" class="no" data-lunch="no" aria-pressed="${a==="no"}">${t.no}</button></div>${!today&&isWeekday?`<p class="note">${t.lunchToday}</p>`:""}<p class="note">${t.menu}: ${MENU[lang].join(" · ")}</p></div>`}
 function nextLesson(t){if(!isWeekday)return t.noSchool;const tt=timetable(kasClass(),todayIdx),c=nowMin();for(let i=0;i<8;i++){if(tt[i]==="Break"||tt[i]==="Lunch")continue;const end=i===7?mins(END):mins(TIMES[i+1]);if(c<end)return `${TIMES[i]} · <b>${t.subj[tt[i]]}</b>${c>=mins(TIMES[i])?` <span class="chip red">${t.now}</span>`:""}`}return t.noMore}
 function dueSoon(t){const l=myWork().filter(h=>!isDone(h)&&h.due&&daysBetween(TODAY,h.due)<=3).sort((a,b)=>a.due.localeCompare(b.due));return `<div class="list">${l.length?workRows(t,l,role()==="student"):empty(t.noHw)}</div>`}
 function gradesFor(name){return S.marks[name]||{}}
@@ -625,6 +626,8 @@ function lockView(t){const wait=lockLeft("staff");
 
 let notice="";
 const CHANGELOG=[
+ {v:"42",date:"2026-10-24",en:["Lunch buttons always work now: before 10:00 you choose for today, after that (and at the weekend) for the next school day"],
+  es:["Los botones del comedor siempre funcionan: antes de las 10:00 eliges para hoy, después (y el fin de semana) para el siguiente día de clase"]},
  {v:"41",date:"2026-10-24",en:["Staff login codes stay the same until the admin makes a new one, and the admin can always look them up again under Accounts"],
   es:["Los códigos del personal no cambian hasta que el admin crea uno nuevo, y el admin siempre puede volver a verlos en Cuentas"]},
  {v:"40",date:"2026-10-24",en:["Every member of staff now has their own personal login code (made by the admin or school head)","Parents can log in with their own parent code and report their child absent","Shared iPad? Tick \"shared device\" when you log in and you are logged out automatically","School alerts on your phone: turn them on and get DANA warnings and school news even when the app is closed","News and events can be written in Spanish too, with an automatic translate button","Teachers can edit homework and add a link or a photo of the task","Teachers can set a target grade per student","Offline: without internet you still see your homework and timetable from the last time"],
@@ -651,7 +654,7 @@ function updCard(t){if(!showUpdCard)return "";const c=CHANGELOG[0];return `<div 
 function whatsNewView(t){return `<section class="sec"><h2>✨ ${t.newTitle}</h2>${CHANGELOG.map((c,i)=>`<div class="card${i===0?" upd":""}"><div class="cardhead"><b>${fmt(c.date,{day:"numeric",month:"long",year:"numeric"})}</b><span class="note">${t.version} ${c.v}</span></div><ul>${c[lang].map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}<button class="btn ghost" data-closenew="1" style="justify-self:start">← ${t.newBack}</button></section>`}
 const newLink=t=>`<button class="linkbtn small" data-whatsnew="1">✨ ${t.newLink} · ${t.version} ${APP_VERSION}</button>`;
 let viewPublic=true,ptab="main";
-const APP_VERSION="41";{const old=store.get("appver",null);store.set("appver",APP_VERSION);if(old&&old!==APP_VERSION)showUpdCard=true}const shownCodes=new Set();
+const APP_VERSION="42";{const old=store.get("appver",null);store.set("appver",APP_VERSION);if(old&&old!==APP_VERSION)showUpdCard=true}const shownCodes=new Set();
 const safe=(name,fn)=>e=>{try{fn(e)}catch(err){logErr(err,"action: "+name);try{render()}catch(x){}}};
 if(typeof window!=="undefined"&&window.addEventListener){window.addEventListener("error",e=>logErr(e.error||e.message,"page"));window.addEventListener("unhandledrejection",e=>logErr(e.reason,"page"))}
 function logErr(e,where){try{if(CLOUD_ON)rpc("log_error",{p_place:String(where).slice(0,80),p_message:String((e&&(e.message||e.code))||e).slice(0,300)}).catch(()=>{});S.errors=(S.errors||[]).concat({d:new Date().toISOString(),w:where,m:String((e&&(e.message||e.code))||e).slice(0,240)}).slice(-30);save()}catch(x){}}
@@ -765,7 +768,7 @@ document.addEventListener("click",safe("click",e=>{
  else if(d.lock||d.lockall||d.tostudent){superAdmin=false;pickTeacher=false;shownCodes.clear();viewPublic=!S.users.some(u=>u.id===stuLogin);ptab="main";adminMode=false;loginOpen=false;curId=studentId();store.set("cur",curId);tab=null;pinMsg="";forgotOpen=false}
  else if(d.forgot)forgotOpen=true;
  else if(d.reset){S=SEED();save();adminMode=false;superAdmin=false;loginOpen=true;curId=studentId();forgotOpen=false;pinMsg=""}
- else if(d.lunch){if(b.disabled)return;(S.lunch[TODAY]=S.lunch[TODAY]||{})[stu().n]=d.lunch;save()}
+ else if(d.lunch){const ld=lunchTarget();(S.lunch[ld]=S.lunch[ld]||{})[stu().n]=d.lunch;save()}
  else if(d.claim){const x=S.lost.find(x=>x.id==d.claim);if(x&&!x.claimed){x.claimed=true;x.claimedBy=me().n+" · "+kasClass();x.claimedAt=TODAY}save()}
  else if(d.handed){const x=S.lost.find(x=>x.id==d.handed);if(x)x.handed=true;save()}
  else if(d.approve||d.reject){const x=S.subs.find(s=>s.id==(d.approve||d.reject));if(x&&myLvl()>=2)x.status=d.approve?"approved":"rejected";save()}
@@ -945,7 +948,7 @@ function cloudClick(e){const b=e.target.closest&&e.target.closest("button");if(!
  if(d.parentcode){stop(e);const u=S.users.find(x=>String(x.id)===d.parentcode);act("parent_code",{p_student:d.parentcode}).then(c=>{if(c){codeReveal={n:(lang==="es"?"Padres de ":"Parent of ")+(u?u.n:""),code:c,kind:"parent"};render()}});return}
  if(d.vote)return go("vote_idea",{p_idea:+d.vote});
  if(d.newcode){if(!canSeeCodes())return stop(e);const u=S.users.find(x=>String(x.id)===d.newcode);return go("new_student_code",{p_student:d.newcode},`${t.newCodeMade} ${u?u.n:""}`)}
- if(d.lunch){if(b.disabled)return stop(e);return go("set_lunch",{p_answer:d.lunch})}
+ if(d.lunch)return go("set_lunch",{p_answer:d.lunch});
  if(d.claim)return go("claim_lost",{p_item:+d.claim});
  if(d.handed)return go("hand_over",{p_item:+d.handed});
  if(d.approve||d.reject)return go("review_submission",{p_sub:+(d.approve||d.reject),p_approve:!!d.approve});
