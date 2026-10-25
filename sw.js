@@ -1,4 +1,4 @@
-// Mochila service worker: offline copy of the app + school alerts.
+// Mochila service worker: offline copy of the app + school alerts (v2: personal messages).
 const C = "mochila-v1";
 const API = "https://tkorpuzmxftlplzeztbl.supabase.co/rest/v1/rpc/get_app";
 const KEY = "sb_publishable_owO1bzkFxYcrUCgCNGscGw_Bl6dw3a1";
@@ -30,7 +30,13 @@ self.addEventListener("push", (e) => {
   e.waitUntil((async () => {
     let lang = "en";
     try { const r = await caches.match("./__lang"); if (r && (await r.text()) === "es") lang = "es"; } catch (x) {}
-    let title = "Mochila", body = lang === "es" ? "Hay una noticia nueva del colegio." : "There is new school news.";
+    let title = "Mochila", body = lang === "es" ? "Hay una noticia nueva del colegio." : "There is new school news.", tag = "mochila-news";
+    let d = null;
+    try { d = e.data ? e.data.json() : null; } catch (x) { d = null; }
+    if (d && d.t) {
+      await self.registration.showNotification(String(d.t).slice(0, 120), { body: String(d.b || "").slice(0, 300), icon: "icon-192.png", badge: "icon-192.png", tag: "mochila-" + (d.k || "news") + "-" + Date.now(), data: { url: d.url || "./" } });
+      return;
+    }
     try {
       const r = await fetch(API, { method: "POST", headers: { apikey: KEY, "Content-Type": "application/json" }, body: "{}" });
       const j = await r.json();
