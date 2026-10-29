@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-9ufkJMwkohVl1wJvDRc/vsnh3thwsJ4Ly39g+kxESWU=' 'sha256-LdlZmv89HEkVR22EHv72OM/VF7sFnPplQuIJLH09DYM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; connect-src 'self' https://tkorpuzmxftlplzeztbl.supabase.co; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-t6n5wiUnE6bjxsw2w91Xr3qDMxXdpPPZ9WE4kK5aShA=' 'sha256-LdlZmv89HEkVR22EHv72OM/VF7sFnPplQuIJLH09DYM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; connect-src 'self' https://tkorpuzmxftlplzeztbl.supabase.co; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b2a4a">
@@ -663,7 +663,7 @@ function stuLoginView(t){const wait=lockLeft("stu");
 let loginKind=null;const LOGIN_KINDS=[["admin","🛡️"],["head","🎓"],["office","🗂️"],["staff","👩‍🏫"],["student","🎒"],["parent","👪"]];
 function loginChooser(t){return `<h2>${t.chooseLogin}</h2><p class="note">${t.chooseNote}</p><div class="loginGrid">${LOGIN_KINDS.map(([k,ic])=>`<button class="loginBtn" data-loginkind="${k}"><span class="lic">${ic}</span><b>${t.kinds[k]}</b></button>`).join("")}</div><p class="note">${t.lockRule}</p>`}
 const backChoose=t=>`<button class="btn ghost" data-loginback="1" style="justify-self:start">← ${t.backChoose}</button>`;
-function lockView(t){if(!CLOUD_ON)return `<section class="sec"><p class="note err demowarn">${(CMSG[lang]||CMSG.en).demoWarn}</p></section>`+lockView0(t);return lockView0(t)}
+function lockView(t){if(!CLOUD_ON)return `<section class="sec"><div class="note err demowarn">${(CMSG[lang]||CMSG.en).demoWarn}<br><a class="btn" style="display:inline-block;margin-top:8px;text-decoration:none" href="https://cbcsf4h8zd-web.github.io/Mochila/" target="_blank" rel="noopener">👉 ${lang==="es"?"Abrir el Mochila real":"Open the real Mochila"}</a></div></section>`+lockView0(t);return lockView0(t)}
 function lockView0(t){const wait=lockLeft("staff");
  if(pickTeacher){const ts=S.users.filter(u=>u.r==="staff");return `<section class="sec"><h2>🔒 ${t.staffTitle}</h2><h3>${t.pickTeacher}</h3><div class="list">${ts.map(u=>`<div class="row"><div class="what"><b>${esc(u.n)}</b><span>${esc(t.subj[u.c]||u.c)}</span></div><button class="btn" data-pickteacher="${u.id}">${t.login}</button></div>`).join("")||empty(t.noTeachers)}</div>${loginKind?backChoose(t):`<button class="btn ghost" data-tostudent="1" style="justify-self:start">${t.cancel}</button>`}</section>`}
  return `<section class="sec"><h2>🔒 ${loginKind?t.kinds[loginKind]:t.staffTitle}</h2><p class="note">${loginKind?t.kindNote[loginKind]:t.staffNote}</p><form id="f-pin"><input id="pin1" class="full codein" type="password" inputmode="numeric" maxlength="10" autocomplete="off" required placeholder="••••••" aria-label="${t.staffCodeLbl}"><button ${wait>0?"disabled":""}>${t.login}</button></form>${lockMsg(t,"staff")}<p class="note">${t.lockRule}</p>
@@ -768,7 +768,7 @@ function renderInner(){
   const ab=document.getElementById("adminbtn");if(ab)ab.hidden=true;if(mb)mb.hidden=true;
   if(!PUB_TABS.includes(ptab))ptab="main";
   document.getElementById("tabs").innerHTML=PUB_TABS.map(k=>`<button id="ptab-${k}" role="tab" data-ptab="${k}" aria-selected="${k===ptab}">${I(PICON[k])}<span>${k==="login"&&(logged||adminMode)?t.pub.account:t.pub[k]}</span></button>`).join("");
-  document.getElementById("main").innerHTML=`<section class="sec">${CLOUD_ON?"":`<p class="note err demowarn">${(CMSG[lang]||CMSG.en).demoWarn}</p>`}${notice?`<p class="note ok">${notice}</p>`:""}${offBanner(t)}${ptab==="main"?updCard(t)+alertsCard(t):""}${PUBV[ptab](t,logged)}${newLink(t)}</section>`;notice="";return}
+  document.getElementById("main").innerHTML=`<section class="sec">${CLOUD_ON?"":`<div class="note err demowarn">${(CMSG[lang]||CMSG.en).demoWarn}<br><a class="btn" style="display:inline-block;margin-top:8px;text-decoration:none" href="https://cbcsf4h8zd-web.github.io/Mochila/" target="_blank" rel="noopener">👉 ${lang==="es"?"Abrir el Mochila real":"Open the real Mochila"}</a></div>`}${notice?`<p class="note ok">${notice}</p>`:""}${offBanner(t)}${ptab==="main"?updCard(t)+alertsCard(t):""}${PUBV[ptab](t,logged)}${newLink(t)}</section>`;notice="";return}
  if(mb){mb.hidden=false;mb.textContent="🏫 "+t.mainBtn}
  if(!ROLE_TABS[r].includes(tab))tab=ROLE_TABS[r][0];
  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===lang));
