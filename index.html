@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-rxii60+9liWJ8FeGNVi89AHVpUwCSPJW9eSZ78rrLsg=' 'sha256-LdlZmv89HEkVR22EHv72OM/VF7sFnPplQuIJLH09DYM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; connect-src 'self' https://tkorpuzmxftlplzeztbl.supabase.co; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-bYEpSa8PjxThXkKgkm3NWMqZ0ljW1IjZxIBHRD/NGns=' 'sha256-LdlZmv89HEkVR22EHv72OM/VF7sFnPplQuIJLH09DYM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; connect-src 'self' https://tkorpuzmxftlplzeztbl.supabase.co; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b2a4a">
@@ -102,6 +102,7 @@ span.vote{cursor:default}
 .linkbtn.small{font-size:.8rem;color:var(--muted);justify-self:center;margin-top:8px}
 .card .note b{font-size:inherit}
 .chat{display:grid;gap:8px}
+.evlbl{display:grid;gap:2px;font-size:.8rem;color:var(--muted,#667)}
 .row:has(.toggle.reg){flex-wrap:wrap}.toggle.reg{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.toggle.reg button{padding:8px 6px;font-size:.85rem}label.full textarea{width:100%;box-sizing:border-box;margin-top:4px}label.full{display:block}
 .filerow{display:grid;gap:4px;font-size:.9rem}.filerow input{font-size:.85rem}form.editing{outline:2px solid var(--red,#c0392b);outline-offset:6px;border-radius:8px}a.chip{text-decoration:none;color:inherit}button.chip{border:0;font:inherit;cursor:pointer}
 .photobox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:grid;place-items:center;z-index:50;padding:16px}.photobox img{max-width:100%;max-height:80vh;border-radius:8px}.photobox button{margin-top:12px}
@@ -235,7 +236,7 @@ const T={
   days:["Mon","Tue","Wed","Thu","Fri"],now:"Now",due:"Due",on:"On",add:"Add",noHw:"Nothing to do. Nice!",mine:"My own",late:"Late",past:"Past",
   myClass:"My class",cls:"Class",homework:"Homework",test:"Test",tests:"Tests",subject:"Subject",
   phTask:"What needs to be done?",phSubject:"Subject",phTitle:"Title",phText:"Message",phReason:"Reason",phItem:"What was found?",phWhere:"Where was it found?",phName:"Full name",phClassSubj:"Class or subject",
-  send:"Send to class",sent:"Sent",addEvent:"Add event",publish:"Publish",give:"Give",student:"Student",save:"Save grade",saved:"Saved",
+  send:"Send to class",sent:"Sent",addEvent:"Add event",evTime:"Time (optional)",evWhat:"What is happening?",evAddTitle:"Add an event",evMine:"added by you",publish:"Publish",give:"Give",student:"Student",save:"Save grade",saved:"Saved",
   merit:"Merit",demerit:"Demerit",merits:"Merits",demerits:"Demerits",noPts:"No merits or demerits yet.",onlyStudents:"Only students can get merits and demerits.",
   cat:{general:"General",holiday:"Holiday",dayoff:"Day off",cancel:"Lesson cancelled",public:"Public holiday",dana:"DANA alert",esalert:"ES-Alert"},addAlert:"Post an alert",alertNote:"Staff can post DANA and ES-Alert warnings. They show at the top for everyone and end after 2 days, or when you end them.",alertType:"Type of alert",allNews:"All",endAlert:"End alert",ended:"Ended",
   hwNote:"Work set by a teacher appears for every student in that class.",
@@ -262,7 +263,7 @@ const T={
   days:["Lun","Mar","Mié","Jue","Vie"],now:"Ahora",due:"Entrega",on:"El",add:"Añadir",noHw:"Nada pendiente. ¡Genial!",mine:"Propio",late:"Tarde",past:"Pasado",
   myClass:"Mi clase",cls:"Clase",homework:"Deberes",test:"Examen",tests:"Exámenes",subject:"Asignatura",
   phTask:"¿Qué hay que hacer?",phSubject:"Asignatura",phTitle:"Título",phText:"Mensaje",phReason:"Motivo",phItem:"¿Qué se encontró?",phWhere:"¿Dónde se encontró?",phName:"Nombre completo",phClassSubj:"Clase o asignatura",
-  send:"Enviar a la clase",sent:"Enviado",addEvent:"Añadir evento",publish:"Publicar",give:"Dar",student:"Alumno",save:"Guardar nota",saved:"Guardado",
+  send:"Enviar a la clase",sent:"Enviado",addEvent:"Añadir evento",evTime:"Hora (opcional)",evWhat:"¿Qué pasa?",evAddTitle:"Añadir un evento",evMine:"añadido por ti",publish:"Publicar",give:"Dar",student:"Alumno",save:"Guardar nota",saved:"Guardado",
   merit:"Mérito",demerit:"Demérito",merits:"Méritos",demerits:"Deméritos",noPts:"Aún no hay méritos ni deméritos.",onlyStudents:"Solo los alumnos pueden recibir méritos y deméritos.",
   cat:{general:"General",holiday:"Vacaciones",dayoff:"Día libre",cancel:"Clase cancelada",public:"Festivo",dana:"Alerta DANA",esalert:"ES-Alert"},addAlert:"Publicar alerta",alertNote:"El personal puede publicar avisos DANA y ES-Alert. Salen arriba para todos y terminan a los 2 días, o cuando los terminas tú.",alertType:"Tipo de alerta",allNews:"Todo",endAlert:"Terminar alerta",ended:"Terminada",
   hwNote:"Las tareas del profesorado aparecen para todos los alumnos de esa clase.",
@@ -409,8 +410,9 @@ const REG_T="08:50",regNow=()=>{const c=nowMin();return day===todayIdx&&isWeekda
 const regRowH=t=>`<div class="row reg-row${regNow()?" now":""}"><div class="time">${REG_T}</div><div class="what"><b>📋 ${t.regRow}</b><span>${t.regRowSub}</span></div>${regNow()?`<span class="chip red">${t.now}</span>`:""}</div>`;
 const ttList=(c,t)=>`<div class="list">${regRowH(t)}${timetable(c,day).map((s,i)=>`<div class="row${isNow(i)?" now":""}"><div class="time">${TIMES[i]}</div><div class="what"><b>${t.subj[s]}</b></div>${nowChip(i,t)}</div>`).join("")}</div>`;
 const yearOf=c=>+(String(c).match(/\d+/)||[0])[0];
-function eventRows(t,manage,pub){const myY=["student","parent"].includes(role())&&!pub&&!viewPublic?yearOf(kasClass()):0;const list=[...S.events].filter(e=>manage||e.date>=TODAY).filter(e=>!myY||!e.year||e.year===myY).sort((a,b)=>a.date.localeCompare(b.date));
- return list.map(e=>`<div class="row${e.date<TODAY?" faded":""}"><div class="date"><b>${fmt(e.date,{day:"numeric"})}</b><span>${fmt(e.date,{month:"short"})}</span></div><div class="what"><b>${esc(e[lang]||e.en)}</b><span>${fmt(e.date,{weekday:"long"})}${e.year?` · <b class="yr">Y${e.year} ${t.yearOnly}</b>`:""}</span></div>${e.date<TODAY?`<span class="chip">${t.past}</span>`:`<button class="linkbtn" data-ics="ev:${e.id}" title="${t.addCal}" aria-label="${t.addCal}">📅＋</button>`}${manage?delBtn("ev:"+e.id,t):""}</div>`).join("")||empty()}
+const eventForm=t=>`<form id="f-event"><input id="eTitle" class="full" required placeholder="${t.evWhat}" aria-label="${t.evWhat}">${CLOUD_ON?`<input id="eTitleEs" class="full" placeholder="${t.phTitleEs}" aria-label="${t.phTitleEs}"><button type="button" class="linkbtn full" data-trnews="ev">🌐 ${t.trBtn}</button>`:""}<label class="evlbl">${t.date}<input id="eDate" type="date" min="${TODAY}" required aria-label="${t.date}"></label><label class="evlbl">${t.evTime}<input id="eTime" type="time" aria-label="${t.evTime}"></label><select id="eYear" aria-label="${t.forYear}"><option value="">${t.allYears}</option>${[7,8,9,10,11].map(y=>`<option value="${y}">Y${y} ${t.yearOnly}</option>`).join("")}</select><button>${t.addEvent}</button></form>`;
+function eventRows(t,manage,pub){const myY=["student","parent"].includes(role())&&!pub&&!viewPublic?yearOf(kasClass()):0;const list=[...S.events].filter(e=>manage||e.date>=TODAY).filter(e=>!myY||!e.year||e.year===myY).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||"").localeCompare(b.time||""));
+ return list.map(e=>`<div class="row${e.date<TODAY?" faded":""}"><div class="date"><b>${fmt(e.date,{day:"numeric"})}</b><span>${fmt(e.date,{month:"short"})}</span></div><div class="what"><b>${esc(e[lang]||e.en)}</b><span>${fmt(e.date,{weekday:"long"})}${e.time?` · 🕒 ${esc(e.time)}`:""}${e.year?` · <b class="yr">Y${e.year} ${t.yearOnly}</b>`:""}${!pub&&e.by&&e.by===curId?` · ${t.evMine}`:""}</span></div>${e.date<TODAY?`<span class="chip">${t.past}</span>`:`<button class="linkbtn" data-ics="ev:${e.id}" title="${t.addCal}" aria-label="${t.addCal}">📅＋</button>`}${manage||(!pub&&role()==="staff"&&e.by&&e.by===curId&&e.date>=TODAY)?delBtn("ev:"+e.id,t):""}</div>`).join("")||empty()}
 const activeDana=()=>S.news.filter(n=>isAlert(n)&&n.active&&daysBetween(n.date,TODAY)<=2).pop();
 function danaBanner(t){const d=activeDana();return d?`<div class="alert" role="alert"><span class="chip c-dana">${t.cat[d.cat]}</span><div><b>${esc(tr(d,"title"))}</b><p>${esc(tr(d,"text"))}</p></div></div>`:""}
 function newsBlock(t,filter,manage,limit){
@@ -570,7 +572,7 @@ function hubView(t){const tabs=HUB[role()];if(!tabs.includes(hub))hub=tabs[0];
 const HUBV={
  news:t=>`${danaBanner(t)}${role()==="staff"?`<div class="card"><b>${t.addAlert}</b><form id="f-alert"><select id="alCat" class="full" aria-label="${t.alertType}">${ALERTS.map(c=>`<option value="${c}">${t.cat[c]}</option>`).join("")}</select><input id="alTitle" class="full" required placeholder="${t.phTitle}" aria-label="${t.phTitle}"><textarea id="alText" class="full" rows="2" required placeholder="${t.phText}" aria-label="${t.phText}"></textarea><input id="alTitleEs" class="full" placeholder="${t.phTitleEs}" aria-label="${t.phTitleEs}"><textarea id="alTextEs" class="full" rows="2" placeholder="${t.phTextEs}" aria-label="${t.phTextEs}"></textarea>${CLOUD_ON||botAvail?`<button type="button" class="linkbtn" data-trnews="al">🌐 ${trBusy?t.trBusy:t.trBtn}</button>`:""}<button>${t.publish}</button></form>${trNote?`<p class="note err">${esc(trNote)}</p>`:""}<p class="note">${t.alertNote}</p></div>`:""}${searchBox(t,"news")}<div id="res-news">${newsBlock(t,true,false)}</div>`,
  paper:t=>`${paperView(t)}${role()==="student"?subForm(t):""}`,
- events:t=>`<div class="list">${eventRows(t,false)}</div>`,
+ events:t=>`${["staff","head"].includes(role())&&(CLOUD_ON||adminMode)?`<h3>${t.evAddTitle}</h3>${eventForm(t)}${errNote()}`:""}<div class="list">${eventRows(t,false)}</div>`,
  sports:t=>sportsList(t,false),
  map:t=>mapView(t),
  life:t=>`<h3>${t.council}</h3><div class="list"><div class="row"><div class="what"><p style="margin:0">${t.councilText}</p></div></div></div>${ideaBox(t)}<h3>${t.lunchClubs}</h3><div class="list">${clubsL().map(c=>`<div class="row"><div class="time">${t.days[c.d]}</div><div class="what"><b>${c[lang]}</b><span>${c.r}</span></div></div>`).join("")}</div>`,
@@ -634,7 +636,7 @@ const VIEWS={
   <div class="list">${cr.map(n=>{const a=lunchOf(n);return `<div class="row"><div class="what"><b>${esc(n)}</b></div><span class="chip ${a==="yes"?"c-holiday":a==="no"?"c-cancel":""}">${a==="yes"?t.coming:a==="no"?t.notComing:t.noAnswer}</span></div>`}).join("")}</div>`},
  lostm:t=>`<h2>${t.tabs.lostm}</h2><form id="f-lost"><input id="lItem" class="full" required placeholder="${t.phItem}" aria-label="${t.phItem}"><input id="lWhere" class="full" required placeholder="${t.phWhere}" aria-label="${t.phWhere}"><button>${t.addItem}</button></form>
   ${searchBox(t,"lost")}<div id="res-lost">${lostList(t,true)}</div>`,
- manage:t=>`<h2>${t.tabs.manage}</h2><form id="f-event"><input id="eTitle" class="full" required placeholder="${t.phTitle}" aria-label="${t.phTitle}">${CLOUD_ON?`<input id="eTitleEs" class="full" placeholder="${t.phTitleEs}" aria-label="${t.phTitleEs}"><button type="button" class="linkbtn full" data-trnews="ev">🌐 ${t.trBtn}</button>`:""}<input id="eDate" type="date" min="${TODAY}" required aria-label="${t.date}"><select id="eYear" aria-label="${t.forYear}"><option value="">${t.allYears}</option>${[7,8,9,10,11].map(y=>`<option value="${y}">Y${y} ${t.yearOnly}</option>`).join("")}</select><button>${t.addEvent}</button></form>${errNote()}<div class="list">${eventRows(t,true)}</div>`,
+ manage:t=>`<h2>${t.tabs.manage}</h2>${eventForm(t)}${errNote()}<div class="list">${eventRows(t,true)}</div>`,
  overview:t=>{const m=S.points.filter(x=>x.kind==="merit").length,c=lunchCounts();return `${role()==="admin"?errorLog(t):""}${danaBanner(t)}<h2>${t.tabs.overview}</h2><div class="stats"><div class="stat"><b>${SCHOOL_SIZE()}</b><span>${t.st.students}</span></div><div class="stat"><b>${CLASSES.length}</b><span>${t.st.classes}</span></div><div class="stat good"><b>${m}</b><span>${t.st.merits}</span></div><div class="stat bad"><b>${S.points.length-m}</b><span>${t.st.demerits}</span></div><div class="stat"><b>${pct(c.yes,SCHOOL_SIZE())}%</b><span>${t.st.lunchYes} · ${c.yes}</span></div><div class="stat"><b>${S.absences.filter(a=>a.date===TODAY).length}</b><span>${t.st.absent}</span></div></div><h3>${t.perDay}</h3><div class="list">${schoolDays(5).map(d=>{const x=lunchDay(d),p=pct(x.yes,SCHOOL_SIZE());return `<div class="row"><div class="time">${t.wk[(new Date(d+"T12:00").getDay()+6)%7]}</div><div class="what"><b>${p}%</b><div class="bar"><i style="width:${Math.min(100,p)}%;background:var(--ok);opacity:1"></i></div></div></div>`}).join("")}</div><h3>${t.houses}</h3>${houseTable(t)}`},
  users:t=>{const admins=S.users.filter(u=>u.r==="admin").length,list=[...S.users].filter(u=>!CLOUD_ON||u.r!=="student"||u.c===codeCls).sort((a,b)=>LEVEL[b.r]-LEVEL[a.r]),mine=myLvl();
   return `<h2>${t.tabs.users}</h2>${revealCard(t)}<h3>${t.power}</h3><div class="list">${[4,3,2,1].map(l=>`<div class="row${l===mine?" now":""}"><div class="lv l${l}">${5-l}</div><div class="what"><b>${t.lvl[l]}</b><span>${(c=>`${c} ${c===1?t.acc1:t.accN}`)(S.users.filter(u=>LEVEL[u.r]===l).length)}</span></div>${l===mine?`<span class="chip red">${lang==="es"?"Tú":"You"}</span>`:""}</div>`).join("")}</div><p class="note">${t.powerNote}</p>
@@ -654,6 +656,8 @@ function lockView(t){const wait=lockLeft("staff");
 
 let notice="";
 const CHANGELOG=[
+ {v:"46",date:"2026-10-29",en:["Teachers can add events: what, the date and the time (School → Events)","Events now show the time","Teachers can remove events they added themselves"],
+  es:["El profesorado puede añadir eventos: qué, la fecha y la hora (Colegio → Eventos)","Los eventos muestran ahora la hora","El profesorado puede quitar los eventos que añadió"]},
  {v:"45",date:"2026-10-28",en:["Every day starts with registration at 08:50: it is now the first row of every timetable","Teachers see a reminder card on Lessons until the register for their form class is done","The app remembers your form class on this phone"],
   es:["Cada día empieza con el registro a las 08:50: ahora es la primera fila de cada horario","El profesorado ve un aviso en Clases hasta que haya pasado lista de su tutoría","La app recuerda tu tutoría en este móvil"]},
  {v:"44",date:"2026-10-25",en:["Only teachers, the school head and the admin can give merits and demerits","The admin now also has the Pupils tab (merits, grades, codes, messages)"],
@@ -688,7 +692,7 @@ function updCard(t){if(!showUpdCard)return "";const c=CHANGELOG[0];return `<div 
 function whatsNewView(t){return `<section class="sec"><h2>✨ ${t.newTitle}</h2>${CHANGELOG.map((c,i)=>`<div class="card${i===0?" upd":""}"><div class="cardhead"><b>${fmt(c.date,{day:"numeric",month:"long",year:"numeric"})}</b><span class="note">${t.version} ${c.v}</span></div><ul>${c[lang].map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}<button class="btn ghost" data-closenew="1" style="justify-self:start">← ${t.newBack}</button></section>`}
 const newLink=t=>`<button class="linkbtn small" data-whatsnew="1">✨ ${t.newLink} · ${t.version} ${APP_VERSION}</button>`;
 let viewPublic=true,ptab="main";
-const APP_VERSION="45";{const old=store.get("appver",null);store.set("appver",APP_VERSION);if(old&&old!==APP_VERSION)showUpdCard=true}const shownCodes=new Set();
+const APP_VERSION="46";{const old=store.get("appver",null);store.set("appver",APP_VERSION);if(old&&old!==APP_VERSION)showUpdCard=true}const shownCodes=new Set();
 const safe=(name,fn)=>e=>{try{fn(e)}catch(err){logErr(err,"action: "+name);try{render()}catch(x){}}};
 if(typeof window!=="undefined"&&window.addEventListener){window.addEventListener("error",e=>logErr(e.error||e.message,"page"));window.addEventListener("unhandledrejection",e=>logErr(e.reason,"page"))}
 function logErr(e,where){try{if(CLOUD_ON)rpc("log_error",{p_place:String(where).slice(0,80),p_message:String((e&&(e.message||e.code))||e).slice(0,300)}).catch(()=>{});S.errors=(S.errors||[]).concat({d:new Date().toISOString(),w:where,m:String((e&&(e.message||e.code))||e).slice(0,240)}).slice(-30);save()}catch(x){}}
@@ -852,7 +856,7 @@ document.addEventListener("submit",safe("submit",e=>{
  if(f==="f-mark"&&!isStudentIn(v("mStudent"),v("mCls"))){save();render();return}
  if(f==="f-mark"){const st=v("mStudent"),s=v("mSubject"),prev=(S.marks[st]||{})[s];(S.marks[st]=S.marks[st]||{})[s]={g:+v("mGrade"),t:prev?prev.t:6,e:v("mEffort"),c:v("mComment")};S.markLog.push({student:st,subj:s,g:+v("mGrade"),by:me().n,date:TODAY});flash=`${t.saved}: ${st} · ${t.subj[s]} · ${v("mGrade")}`}
  if(f==="f-event"&&v("eDate")<TODAY){pinMsg=t.pastDate;render();return}
- if(f==="f-event")S.events.push({id:Date.now(),date:v("eDate"),en:v("eTitle"),es:v("eTitle"),year:+v("eYear")||undefined});
+ if(f==="f-event")S.events.push({id:Date.now(),date:v("eDate"),time:v("eTime")||undefined,by:curId,en:v("eTitle"),es:v("eTitle"),year:+v("eYear")||undefined});
  if(f==="f-alert"&&myLvl()>=2&&ALERTS.includes(v("alCat"))){S.news.push({id:Date.now(),date:TODAY,cat:v("alCat"),active:true,title:v("alTitle"),text:v("alText"),by:me().n});newsCat="all"}
  if(f==="f-news")S.news.push({id:Date.now(),date:TODAY,cat:v("nCat"),active:ALERTS.includes(v("nCat")),title:v("nTitle"),text:v("nText"),by:me().n});
  if(f==="f-paper"){const raw=[1,2,3].map(i=>({h:v("pH"+i),b:v("pB"+i),a:v("pA"+i)}));const bad=raw.findIndex(a=>(a.h||a.b||a.a)&&!(a.h&&a.b));
@@ -936,7 +940,7 @@ const SUBMITS={
  "f-menu":t=>{const L=id=>fv(id).split("\n").map(x=>x.trim()).filter(Boolean).slice(0,12);return act("set_setting",{p_key:"menu",p_value:{en:L("menuEn"),es:L("menuEs")}},t.menuSaved)},
  "f-clubs":t=>{const dn=[...T.en.days5,...T.es.days5].map(x=>x.toLowerCase());const v=fv("clubsTxt").split("\n").map(l=>l.split("|").map(x=>x.trim())).filter(p=>p.length>=2&&p[1]).slice(0,20).map(p=>{let d=dn.indexOf((p[0]||"").toLowerCase());d=d<0?Math.max(0,Math.min(4,(+p[0]||1)-1)):d%5;return{d,en:p[1].slice(0,60),es:(p[2]||p[1]).slice(0,60),r:(p[3]||"").slice(0,40)}});return act("set_setting",{p_key:"clubs",p_value:v},t.clubsSaved)},
  "f-mark":t=>{const u=userByName(fv("mStudent"),fv("mCls"));if(!u){render();return}const s=fv("mSubject"),g=fv("mGrade");return act("save_grade",{p_student:u.id,p_subject:s,p_grade:+g,p_effort:fv("mEffort"),p_comment:fv("mComment"),p_target:+fv("mTarget")||null},`${t.saved}: ${u.n} · ${t.subj[s]||s} · ${g}`)},
- "f-event":t=>{if(fv("eDate")<TODAY){pinMsg=t.pastDate;render();return}return act("post_event",{p_date:fv("eDate"),p_title:fv("eTitle"),p_title_es:fv("eTitleEs")||null,p_year:+fv("eYear")||null})},
+ "f-event":t=>{if(fv("eDate")<TODAY){pinMsg=t.pastDate;render();return}return act("add_event2",{p_date:fv("eDate"),p_title:fv("eTitle"),p_title_es:fv("eTitleEs")||null,p_year:+fv("eYear")||null,p_time:fv("eTime")||null},t.addEvent+" ✓")},
  "f-alert":t=>{if(!ALERTS.includes(fv("alCat")))return;newsCat="all";return postNews(fv("alCat"),fv("alTitle"),fv("alText"),fv("alTitleEs"),fv("alTextEs"))},
  "f-news":t=>postNews(fv("nCat"),fv("nTitle"),fv("nText"),fv("nTitleEs"),fv("nTextEs")),
  "f-paper":t=>{const raw=[1,2,3].map(i=>({h:fv("pH"+i),b:fv("pB"+i),a:fv("pA"+i)}));const bad=raw.findIndex(a=>(a.h||a.b||a.a)&&!(a.h&&a.b));
@@ -978,7 +982,7 @@ function cloudClick(e){const b=e.target.closest&&e.target.closest("button");if(!
  const go=(fn,args,msg)=>{stop(e);pending=null;act(fn,args,msg)};
  if(d.del){const[k,id]=d.del.split(":");stop(e);pending=null;
   if(["hw","lost","idea","sport","abs"].includes(k))act("remove_item",{p_kind:k,p_id:+id});
-  else if(k==="ev")act("delete_event",{p_event:+id});else if(k==="news")act("delete_news",{p_news:+id});
+  else if(k==="ev")act("remove_event",{p_event:+id});else if(k==="news")act("delete_news",{p_news:+id});
   else if(k==="user"){if(id===String(curId)){flash=t.notAllowed;render()}else act("delete_account",{p_account:id})}return}
  if(d.closereveal){stop(e);codeReveal=null;render();return}
  if(d.savereg){stop(e);const list=S.users.filter(u=>u.r==="student"&&u.c===regCls),marks=list.map(u=>({id:u.id,status:regDraft[u.id]||(S.register||{})[u.n]||"present"}));act("save_register",{p_class:regCls,p_marks:marks},n=>T[lang].regSaveDone.replace("{n}",n)).then(()=>{regDraft={}});return}
