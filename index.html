@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-rvaT+HmbV9/nIA3a3wxGXVCrJYmYiDX4qAv3xyMwGBM=' 'sha256-LdlZmv89HEkVR22EHv72OM/VF7sFnPplQuIJLH09DYM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; connect-src 'self' https://tkorpuzmxftlplzeztbl.supabase.co; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-9ufkJMwkohVl1wJvDRc/vsnh3thwsJ4Ly39g+kxESWU=' 'sha256-LdlZmv89HEkVR22EHv72OM/VF7sFnPplQuIJLH09DYM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; connect-src 'self' https://tkorpuzmxftlplzeztbl.supabase.co; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b2a4a">
@@ -659,7 +659,7 @@ const VIEWS={
 
 const pinHash=s=>{let x=5381;for(const c of "mochila:"+s)x=((x*33)^c.charCodeAt(0))>>>0;return x.toString(36)};
 function stuLoginView(t){const wait=lockLeft("stu");
- return `<section class="sec"><h2>${loginKind?LOGIN_KINDS.find(x=>x[0]===loginKind)[1]+" "+t.kinds[loginKind]:t.stuLoginTitle}</h2><p class="note">${loginKind?t.kindNote[loginKind]+". ":""}${t.stuLoginText}</p><form id="f-stu"><input id="stuCode" class="full codein" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="off" required placeholder="••••••" aria-label="${t.codeLabel}"><button ${wait>0?"disabled":""}>${t.login}</button>${CLOUD_ON?`<label class="full sharedrow"><input type="checkbox" id="stuShared"> ${t.sharedDev}</label>`:""}</form>${lockMsg(t,"stu")}<p class="note">${t.lockRule}</p><p class="note">${t.codeLabel}</p></section>`}
+ return `<section class="sec"><h2>${loginKind?LOGIN_KINDS.find(x=>x[0]===loginKind)[1]+" "+t.kinds[loginKind]:t.stuLoginTitle}</h2><p class="note">${loginKind?t.kindNote[loginKind]+". ":""}${t.stuLoginText}</p><form id="f-stu"><input id="stuCode" class="full codein" type="password" inputmode="numeric" pattern="[0-9]{6,10}" maxlength="10" autocomplete="off" required placeholder="••••••" aria-label="${t.codeLabel}"><button ${wait>0?"disabled":""}>${t.login}</button>${CLOUD_ON?`<label class="full sharedrow"><input type="checkbox" id="stuShared"> ${t.sharedDev}</label>`:""}</form>${lockMsg(t,"stu")}<p class="note">${t.lockRule}</p><p class="note">${t.codeLabel}</p></section>`}
 let loginKind=null;const LOGIN_KINDS=[["admin","🛡️"],["head","🎓"],["office","🗂️"],["staff","👩‍🏫"],["student","🎒"],["parent","👪"]];
 function loginChooser(t){return `<h2>${t.chooseLogin}</h2><p class="note">${t.chooseNote}</p><div class="loginGrid">${LOGIN_KINDS.map(([k,ic])=>`<button class="loginBtn" data-loginkind="${k}"><span class="lic">${ic}</span><b>${t.kinds[k]}</b></button>`).join("")}</div><p class="note">${t.lockRule}</p>`}
 const backChoose=t=>`<button class="btn ghost" data-loginback="1" style="justify-self:start">← ${t.backChoose}</button>`;
@@ -671,6 +671,8 @@ function lockView0(t){const wait=lockLeft("staff");
 
 let notice="";
 const CHANGELOG=[
+ {v:"52",date:"2026-10-29",en:["Staff codes (8 digits) now also work when typed in the pupil login box: Mochila sees it is a staff code"],
+  es:["Los códigos del personal (8 cifras) ahora también funcionan si se escriben en la casilla de alumnos: Mochila ve que es un código del personal"]},
  {v:"51",date:"2026-10-29",en:["If the app cannot reach the school server, it now says so clearly with a Try again button, instead of quietly switching to demo mode","Demo versions show a big warning that real codes do not work there"],
   es:["Si la app no llega al servidor del colegio, ahora lo dice claramente con un botón Reintentar, en vez de pasar en silencio al modo demo","Las versiones demo muestran un aviso grande de que los códigos reales no funcionan ahí"]},
  {v:"50",date:"2026-10-29",en:["New login screen with 6 buttons: Admin, School head, Administration, Staff, Pupils and Parents","Each button only accepts the code for that kind of account"],
@@ -717,7 +719,7 @@ function updCard(t){if(!showUpdCard)return "";const c=CHANGELOG[0];return `<div 
 function whatsNewView(t){return `<section class="sec"><h2>✨ ${t.newTitle}</h2>${CHANGELOG.map((c,i)=>`<div class="card${i===0?" upd":""}"><div class="cardhead"><b>${fmt(c.date,{day:"numeric",month:"long",year:"numeric"})}</b><span class="note">${t.version} ${c.v}</span></div><ul>${c[lang].map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}<button class="btn ghost" data-closenew="1" style="justify-self:start">← ${t.newBack}</button></section>`}
 const newLink=t=>`<button class="linkbtn small" data-whatsnew="1">✨ ${t.newLink} · ${t.version} ${APP_VERSION}</button>`;
 let viewPublic=true,ptab="main";
-const APP_VERSION="51";{const old=store.get("appver",null);store.set("appver",APP_VERSION);if(old&&old!==APP_VERSION)showUpdCard=true}const shownCodes=new Set();
+const APP_VERSION="52";{const old=store.get("appver",null);store.set("appver",APP_VERSION);if(old&&old!==APP_VERSION)showUpdCard=true}const shownCodes=new Set();
 const safe=(name,fn)=>e=>{try{fn(e)}catch(err){logErr(err,"action: "+name);try{render()}catch(x){}}};
 if(typeof window!=="undefined"&&window.addEventListener){window.addEventListener("error",e=>logErr(e.error||e.message,"page"));window.addEventListener("unhandledrejection",e=>logErr(e.reason,"page"))}
 function logErr(e,where){try{if(CLOUD_ON)rpc("log_error",{p_place:String(where).slice(0,80),p_message:String((e&&(e.message||e.code))||e).slice(0,300)}).catch(()=>{});S.errors=(S.errors||[]).concat({d:new Date().toISOString(),w:where,m:String((e&&(e.message||e.code))||e).slice(0,240)}).slice(-30);save()}catch(x){}}
@@ -947,11 +949,11 @@ const stop=e=>{e.preventDefault();e.stopImmediatePropagation()};
 const fv=id=>(document.getElementById(id)||{value:""}).value.trim();
 const userByName=(n,c)=>S.users.find(u=>u.r==="student"&&u.n===n&&(!c||u.c===c));
 const SUBMITS={
- "f-stu":async t=>{if(lockLeft("stu")>0){render();return}const c=fv("stuCode");
+ "f-stu":async t=>{const c=fv("stuCode").replace(/\D/g,"");if(c.length>6){loginKind=null;return SUBMITS["f-pin"](t,c)}if(lockLeft("stu")>0){render();return}
   const sh=!!(document.getElementById("stuShared")||{}).checked;
   try{const r=await rpc("login_code",{p_code:c,p_shared:sh});if(r&&r.ok&&loginKind&&r.account.role!==loginKind){rpc("logout",{p_token:r.token}).catch(()=>{});pinMsg=t.wrongKind;render();return}if(r&&r.ok){lockOk("stu");loginKind=null;resetViews();stuTok=r.token;botAvail=null;sharedDev=sh;lastAct=Date.now();if(sh){ss.set("mochila-tok-s",r.token);store.del("mochila-tok");store.del("mochila-cache")}else{store.set("mochila-tok",r.token);ss.del("mochila-tok-s")}adminMode=false;superAdmin=false;await pull();viewPublic=false;tab=null;pinMsg=""}else{mirrorLock("stu",r);pinMsg=lockLeft("stu")>0?"":t.wrongCode}}
   catch(e){if(/^locked/.test(e.code)){mirrorLock("stu",null,e);pinMsg=""}else pinMsg=cErr(e)}render()},
- "f-pin":async t=>{if(lockLeft("staff")>0){render();return}const c=fv("pin1");
+ "f-pin":async(t,given)=>{const c=(given||fv("pin1")).replace(/\D/g,"");if(lockLeft("staff")>0){render();return}
   try{const r=await rpc("login_staff",{p_code:c});
    if(r&&r.ok&&r.pick){lockOk("staff");staffCode=c;pickTeacher=true;pinMsg="";S.users=[...S.users.filter(u=>u.r!=="staff"),...r.pick.map(p=>({id:p.id,n:p.name,r:"staff",c:p.subject}))];setTimeout(()=>{staffCode=null;if(pickTeacher){pickTeacher=false;render()}},120e3)}
    else if(r&&r.ok&&loginKind&&r.account.role!==loginKind){rpc("logout",{p_token:r.token}).catch(()=>{});pinMsg=t.wrongKind}
