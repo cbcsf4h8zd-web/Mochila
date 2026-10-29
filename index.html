@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-t6n5wiUnE6bjxsw2w91Xr3qDMxXdpPPZ9WE4kK5aShA=' 'sha256-LdlZmv89HEkVR22EHv72OM/VF7sFnPplQuIJLH09DYM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; connect-src 'self' https://tkorpuzmxftlplzeztbl.supabase.co; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-0PYqyQoHfbByE9mdQ9/LQC0x/50mx0H2VWqM+oLcOls=' 'sha256-LdlZmv89HEkVR22EHv72OM/VF7sFnPplQuIJLH09DYM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; manifest-src 'self'; connect-src 'self' https://tkorpuzmxftlplzeztbl.supabase.co; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b2a4a">
@@ -671,6 +671,8 @@ function lockView0(t){const wait=lockLeft("staff");
 
 let notice="";
 const CHANGELOG=[
+ {v:"53",date:"2026-10-29",en:["The Mochila inside Claude now connects to the real school server too (through your Supabase connection), so the real codes work there"],
+  es:["El Mochila dentro de Claude ahora también se conecta al servidor real del colegio (a través de tu conexión de Supabase), así que los códigos reales funcionan ahí"]},
  {v:"52",date:"2026-10-29",en:["Staff codes (8 digits) now also work when typed in the pupil login box: Mochila sees it is a staff code"],
   es:["Los códigos del personal (8 cifras) ahora también funcionan si se escriben en la casilla de alumnos: Mochila ve que es un código del personal"]},
  {v:"51",date:"2026-10-29",en:["If the app cannot reach the school server, it now says so clearly with a Try again button, instead of quietly switching to demo mode","Demo versions show a big warning that real codes do not work there"],
@@ -719,7 +721,7 @@ function updCard(t){if(!showUpdCard)return "";const c=CHANGELOG[0];return `<div 
 function whatsNewView(t){return `<section class="sec"><h2>✨ ${t.newTitle}</h2>${CHANGELOG.map((c,i)=>`<div class="card${i===0?" upd":""}"><div class="cardhead"><b>${fmt(c.date,{day:"numeric",month:"long",year:"numeric"})}</b><span class="note">${t.version} ${c.v}</span></div><ul>${c[lang].map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}<button class="btn ghost" data-closenew="1" style="justify-self:start">← ${t.newBack}</button></section>`}
 const newLink=t=>`<button class="linkbtn small" data-whatsnew="1">✨ ${t.newLink} · ${t.version} ${APP_VERSION}</button>`;
 let viewPublic=true,ptab="main";
-const APP_VERSION="52";{const old=store.get("appver",null);store.set("appver",APP_VERSION);if(old&&old!==APP_VERSION)showUpdCard=true}const shownCodes=new Set();
+const APP_VERSION="53";{const old=store.get("appver",null);store.set("appver",APP_VERSION);if(old&&old!==APP_VERSION)showUpdCard=true}const shownCodes=new Set();
 const safe=(name,fn)=>e=>{try{fn(e)}catch(err){logErr(err,"action: "+name);try{render()}catch(x){}}};
 if(typeof window!=="undefined"&&window.addEventListener){window.addEventListener("error",e=>logErr(e.error||e.message,"page"));window.addEventListener("unhandledrejection",e=>logErr(e.reason,"page"))}
 function logErr(e,where){try{if(CLOUD_ON)rpc("log_error",{p_place:String(where).slice(0,80),p_message:String((e&&(e.message||e.code))||e).slice(0,300)}).catch(()=>{});S.errors=(S.errors||[]).concat({d:new Date().toISOString(),w:where,m:String((e&&(e.message||e.code))||e).slice(0,240)}).slice(-30);save()}catch(x){}}
@@ -912,7 +914,20 @@ const ss={get(k){try{return sessionStorage.getItem(k)}catch(e){return null}},set
 const DEV=(()=>{let d=store.get("mochila-dev",null);if(!d||!/^[A-Za-z0-9]{16,40}$/.test(d)){const a="abcdefghijkmnpqrstuvwxyz23456789";d="";try{crypto.getRandomValues(new Uint8Array(20)).forEach(x=>d+=a[x%a.length])}catch(e){for(let i=0;i<20;i++)d+=a[Math.floor(Math.random()*a.length)]}store.set("mochila-dev",d)}return d})();
 let sharedDev=!store.get("mochila-tok",null)&&!!ss.get("mochila-tok-s"),lastAct=Date.now(),stuTok=store.get("mochila-tok",null)||ss.get("mochila-tok-s"),staffTok=ss.get("mochila-staff"),staffCode=null,cloudBusy=false,lastSig="";
 const tok=()=>adminMode?staffTok:stuTok;
-async function rpc(fn,args){let r;try{r=await fetch(CLOUD.url+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:CLOUD.key,"Content-Type":"application/json","x-client-info":"mochila/"+DEV},body:JSON.stringify(args||{}),cache:"no-store",referrerPolicy:"no-referrer"})}catch(e){throw{code:"net"}}
+/* Inside Claude (no internet for the page): talk to the same server through the viewer's own Supabase connector */
+let VIA=null,mcpP=null;
+const getMcp=()=>mcpP||(mcpP=(typeof window!=="undefined"&&window.claude&&window.claude.use?Promise.resolve(window.claude.use("mcp")):Promise.resolve(null)).catch(()=>null));
+function sqlLit(v){if(v===null||v===undefined)return "NULL";if(typeof v==="boolean")return v?"true":"false";if(typeof v==="number"&&isFinite(v))return String(v);if(typeof v==="object")v=JSON.stringify(v);return "'"+String(v).replace(/'/g,"''")+"'"}
+function sqlErr(e){const txt=String(e&&e.message||"")+" "+(()=>{try{return JSON.stringify(e&&e.result||"")}catch(x){return ""}})();const mm=txt.match(/ERROR:\s+(?:[0-9A-Z]{5}:\s+)?([a-z_]+(?::\d+)?)/);return mm?mm[1]:null}
+async function rpcMcp(fn,args){if(!/^[a-z_0-9]+$/.test(fn))throw{code:"failed"};const m=await getMcp();if(!m)throw{code:"net"};
+ const a=Object.entries(args||{}).filter(([k])=>/^p_[a-z_0-9]+$/.test(k)).map(([k,v])=>k+" => "+sqlLit(v)).join(", ");
+ let res;try{res=await m.callTool("Supabase","execute_sql",{project_id:"tkorpuzmxftlplzeztbl",query:"select public."+fn+"("+a+") as r"},{cache:false})}
+ catch(e){const c=sqlErr(e);if(c)throw{code:c};throw{code:e&&["needs_reauth","server_not_connected","not_in_manifest","approval_required","not_granted"].includes(e.code)?"mcp_"+e.code:(e&&e.code==="tool_error"?"failed":"net")}}
+ let txt=res&&res.payload;if(txt&&typeof txt==="object"&&typeof txt.result==="string")txt=txt.result;else if(txt&&typeof txt==="object"&&txt.error){const c=sqlErr({message:JSON.stringify(txt)});throw{code:c||"failed"}}
+ if(typeof txt!=="string")txt=JSON.stringify(txt);const c0=/ERROR:/.test(txt)&&sqlErr({message:txt});if(c0)throw{code:c0};
+ const mm=txt.match(/<untrusted-data-[^>]*>\s*([\s\S]*?)\s*<\/untrusted-data/);let rows;try{rows=JSON.parse(mm?mm[1]:txt)}catch(e){throw{code:"failed"}}
+ let r=Array.isArray(rows)&&rows[0]?rows[0].r:null;if(typeof r==="string"&&/^[\[{]/.test(r)){try{r=JSON.parse(r)}catch(e){}}return r===""?null:r}
+async function rpc(fn,args){if(VIA==="mcp")return rpcMcp(fn,args);let r;try{r=await fetch(CLOUD.url+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:CLOUD.key,"Content-Type":"application/json","x-client-info":"mochila/"+DEV},body:JSON.stringify(args||{}),cache:"no-store",referrerPolicy:"no-referrer"})}catch(e){throw{code:"net"}}
  const txt=await r.text();let j=null;try{j=txt?JSON.parse(txt):null}catch(e){}
  if(!r.ok)throw{code:String((j&&j.message)||"failed")};return j}
 const call=(fn,args)=>rpc(fn,Object.assign({p_token:tok()},args||{}));
@@ -1053,6 +1068,7 @@ async function refresh(){if(cloudBusy||document.hidden)return;try{if(await pull(
 function idleCheck(){if(!sharedDev||!stuTok||adminMode)return;if(Date.now()-lastAct>10*60e3){const b=document.createElement("button");b.dataset.logout="1";b.hidden=true;document.body.appendChild(b);b.click();b.remove()}}
 async function cloudBoot(){const m=document.getElementById("main"),c=CMSG[lang]||CMSG.en;if(m)m.innerHTML=`<section class="sec"><p class="note">${c.loading}</p></section>`;
  window.addEventListener("click",cloudClick,true);window.addEventListener("change",cloudChange,true);window.addEventListener("submit",cloudSubmit,true);
+ if(!(typeof location!=="undefined"&&/github\.io$/.test(location.hostname))){try{await rpc("get_app",{})}catch(e){if(e&&e.code==="net"&&await getMcp())VIA="mcp"}}
  try{if(staffTok){adminMode=true;try{const j=await rpc("get_app",{p_token:staffTok});const a=(j.priv&&j.priv.users||[]).find(u=>u.id===j.priv.me);applyData(j);curId=j.priv.me;superAdmin=!!a&&a.r==="admin";viewPublic=false;lastSig=JSON.stringify(j)}catch(e){if(e.code==="net")throw e;adminMode=false;staffTok=null;ss.del("mochila-staff")}}
   if(!adminMode){await pull();if(stuLogin)viewPublic=false}
   store.del("mochila-demo");try{const dm=document.querySelector(".demo>span");if(dm)dm.hidden=true}catch(x){}}
